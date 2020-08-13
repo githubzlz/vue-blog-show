@@ -12,7 +12,7 @@
         <el-col :span="4"><br></el-col>
         <el-col :span="16">
           <el-card style="margin: 20px; text-align: left">
-            <comment></comment>
+            <comment v-bind:comments-data="comments"></comment>
           </el-card>
         </el-col>
         <el-col :span="4"><br></el-col>
@@ -26,15 +26,23 @@
 
 <script>
 import Comment from "@/components/common/Comment";
+import {api} from '@/api/api'
+
 export default {
   name: "Website",
   components: {Comment},
   data(){
     return{
       scrollIndex: 0,
+      comments:[],
     }
   },
   methods:{
+    getComments(){
+      api.getWebComments().then(res=>{
+        this.comments = res.entity;
+      })
+    },
     handleScroll5: function () {
       let scrollTop = window.pageYOffset || document.getElementById("header_top5").scrollTop  || document.body.scrollTop;
       if(scrollTop >= 180){
@@ -46,6 +54,9 @@ export default {
         this.scrollIndex = scrollTop;
       }
     },
+  },
+  created() {
+    this.getComments()
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll5, false);

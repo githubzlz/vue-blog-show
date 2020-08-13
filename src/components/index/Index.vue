@@ -263,12 +263,10 @@ export default {
   methods: {
     setTagStyle(){
       const tags = document.getElementsByClassName("tag");
-      console.log(tags)
       for (let i = 0; i < tags.length; i++) {
         const tag = tags[i];
 
         const random = Math.floor(Math.random()*10) + 15;
-        console.log(random)
         tag.style.fontSize = random+"px";
 
         const color1 = Math.floor(Math.random()*255);
@@ -446,12 +444,12 @@ export default {
   }
   .articleBack:hover .articleBackGround{
     visibility: visible;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.4);
   }
 
   .articleBack:hover .read_button{
-    color: rgba(255,255,255,1);
-    background-color: rgba(255,255,255,0.3);
+    color: rgb(80, 5, 5);
+    background-color: rgba(255,255,255,0.8);
   }
   .articleTime{
     z-index: 8;

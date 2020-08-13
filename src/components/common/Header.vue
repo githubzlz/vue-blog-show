@@ -1,23 +1,58 @@
 <template>
   <div class="header">
-    <div style="background-color: white">
-      <ul>
-        <li>
+    <div style="background-color: white; height: 90px;overflow: hidden">
+      <img style="width: 163px; height: 36px; margin-top: 30px;margin-left: 50px; display: inline-block; cursor: pointer"
+           v-if="!complete"
+           alt="" src="../../../public/logo.png" >
+      <ul v-if="complete2" id="header2" style="display: inline-block">
+        <li >
           <router-link :to="'/home'" class="router-link">
-              首页
+            首页
           </router-link>
         </li>
-        <li>
+        <li >
           <router-link :to="'/classify'" class="router-link">
             技术博文
           </router-link>
         </li>
-        <li>
+        <li >
           <router-link :to="'/classify'" class="router-link">
             生活博文
           </router-link>
         </li>
-        <li class="main">
+        <li >
+          <router-link :to="'/time'" class="router-link">
+            时间轴
+          </router-link>
+        </li>
+        <li >
+          <router-link :to="'/website'" class="router-link">
+            留言板
+          </router-link>
+        </li>
+        <li>
+          <router-link :to="'/about'" class="router-link">
+            网站信息
+          </router-link>
+        </li>
+      </ul>
+      <ul id="header1" v-if="complete">
+        <li class="li1">
+          <router-link :to="'/home'" class="router-link">
+              首页
+          </router-link>
+        </li>
+        <li class="li1">
+          <router-link :to="'/classify'" class="router-link">
+            技术博文
+          </router-link>
+        </li>
+        <li class="li1">
+          <router-link :to="'/classify'" class="router-link">
+            生活博文
+          </router-link>
+        </li>
+        <li class="li1 main">
           <router-link :to="'/about'" >
             <div class="line" style="margin-right: 20px" >
               <div style="width: 60px; height: 1px; background-color: black; margin-bottom: 5px; margin-left: 20px"></div>
@@ -30,17 +65,17 @@
             </div>
           </router-link>
         </li>
-        <li>
+        <li class="li1">
           <router-link :to="'/time'" class="router-link">
             时间轴
           </router-link>
         </li>
-        <li>
+        <li class="li1">
           <router-link :to="'/website'" class="router-link">
             留言板
           </router-link>
         </li>
-        <li>
+        <li class="li1">
           <router-link :to="'/about'" class="router-link">
             网站信息
           </router-link>
@@ -54,9 +89,44 @@
 <script>
 export default {
   name: "Header",
+  data(){
+    return{
+      complete: false,
+      complete2: false,
+    }
+  },
   mounted() {
+    this.resize();
+    window.onresize = ()=>{
+      this.resize();
+    }
+
   },
   methods:{
+    resize :function (){
+      const width = document.documentElement.clientWidth;
+      const header = document.getElementById("header1");
+      if(width < 1600){
+        if(header){
+          header.style.marginLeft = "5%";
+          header.style.marginRight = "5%";
+        }
+      }else {
+        if(header){
+          header.style.marginLeft = "16%";
+          header.style.marginRight = "16%";
+        }
+      }
+      if(width < 1120){
+        this.complete = false;
+        this.complete2 = true;
+        // header.style.visibility = "hidden";
+      }else {
+        this.complete = true;
+        this.complete2 = false;
+        // header.style.visibility = "visible";
+      }
+    }
   }
 }
 </script>
@@ -86,9 +156,15 @@ export default {
     font-size: 20px;
     font-family: test_zlz;
   }
-  ul{
+  #header2{
     height: 90px;
-    margin: 0 20%;
+    margin-left: 50px;
+    display: flex;
+    justify-content: space-between;
+  }
+  #header1{
+    height: 90px;
+    margin: 0 16%;
     display: flex;
     justify-content: space-between;
   }

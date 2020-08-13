@@ -95,8 +95,59 @@ const clickoutside = {
     delete el.vueClickOutside;
   },
 };
+
+import {api} from '@/api/api'
 export default {
   name:'Comment',
+  props: {
+    commentsData: {}
+  },
+  watch:{
+    commentsData:function(e){
+      const map = new Map();
+      e.forEach(item =>{
+        if(item.children){
+          map.set(item.id,item);
+          item.children.forEach(item =>{
+            map.set(item.id,item);
+          })
+        }
+      });
+      e.forEach(item =>{
+        const comment = {
+          name: item.username,
+          id: item.id,
+          headImg: item.headImg,
+          comment:item.comment,
+          time:this.dateStr(new Date(item.createdTime).getTime()),
+          commentNum:item.children.length,
+          like:item.likes,
+          inputShow:false,
+          reply:[]
+        }
+        if(item.children){
+          item.children.forEach(item =>{
+            const to = map.get(item.toId);
+            const commentC = {
+              id: item.id,
+              from: item.username,
+              fromId: item.id,
+              fromHeadImg: item.headImg,
+              to: to.username,
+              toId: to.id,
+              comment: item.comment,
+              time:this.dateStr(new Date(item.createdTime).getTime()),
+              commentNum:item.commentNum,
+              like:item.likes,
+              inputShow:false
+            }
+            comment.reply.push(commentC);
+          })
+        }
+        this.comments.push(comment);
+      })
+    }
+  },
   data(){
     return{
       btnShow: false,
@@ -104,52 +155,24 @@ export default {
       index:'0',
       replyComment:'',
       myName:'Lana Del Rey',
-      myHeader:'https://ae01.alicdn.com/kf/Hd60a3f7c06fd47ae85624badd32ce54dv.jpg',
+      myHeader:'http://192.168.233.101/group1/M00/00/00/wKjpZV8rZoCAPZtvAA5lGWi2HMU866.jpg',
       myId:19870621,
       to:'',
       toId:-1,
-      comments:[
-        {
-          name:'Lana Del Rey',
-          id:19870621,
-          headImg:'https://ae01.alicdn.com/kf/Hd60a3f7c06fd47ae85624badd32ce54dv.jpg',
-          comment:'我发布一张新专辑Norman Fucking Rockwell,大家快来听啊',
-          time:'2019年9月16日 18:43',
-          commentNum:2,
-          like:15,
-          inputShow:false,
-          reply:[
-            {
-              from:'Taylor Swift',
-              fromId:19891221,
-              fromHeadImg:'https://ae01.alicdn.com/kf/H94c78935ffa64e7e977544d19ecebf06L.jpg',
-              to:'Lana Del Rey',
-              toId:19870621,
-              comment:'我很喜欢你的新专辑！！',
-              time:'2019年9月16日 18:43',
-              commentNum:1,
-              like:15,
-              inputShow:false
-            },
-            {
-              from:'Ariana Grande',
-              fromId:1123,
-              fromHeadImg:'https://ae01.alicdn.com/kf/Hf6c0b4a7428b4edf866a9fbab75568e6U.jpg',
-              to:'Lana Del Rey',
-              toId:19870621,
-              comment:'别忘记宣传我们的合作单曲啊',
-              time:'2019年9月16日 18:43',
-              commentNum:0,
-              like:5,
-              inputShow:false
-            }
-          ]
-        },
-      ]
+      comments:[]
     }
   },
   directives: {clickoutside},
   methods: {
+    getDate(date){
+      let dt = new Date(date);
+      let y = dt.getFullYear();
+      let M = dt.getMonth() + 1;
+      let d = dt.getDate();
+      let h = dt.getHours();
+      let m = dt.getMinutes()
+      return `${y}年${M}月${d}日 ${h}:${m}`
+    },
     inputFocus(){
       var replyInput = document.getElementById('replyInput');
       replyInput.style.padding= "8px 8px"
@@ -168,6 +191,7 @@ export default {
       replyInput.style.border ="none"
     },
     showReplyInput(i,name,id){
+      console.log(i,name,id)
       this.comments[this.index].inputShow = false
       this.index =i
       this.comments[i].inputShow = true
@@ -189,20 +213,50 @@ export default {
         let input =  document.getElementById('replyInput')
         let timeNow = new Date().getTime();
         let time= this.dateStr(timeNow);
-        a.name= this.myName
-        a.comment =this.replyComment
-        a.headImg = this.myHeader
-        a.time = time
-        a.commentNum = 0
-        a.like = 0
-        a.reply = []
-        this.comments.push(a)
-        this.replyComment = ''
-        input.innerHTML = '';
+        let reply = document.getElementById("replyInput").innerText;
+        //提交评论
+        const param = {
+            userId:this.myId,
+            username:this.myName,
+            headImg:this.myHeader,
+            comment:reply,
+            type:"1"
+        }
+        api.getCommentMsg(param).then(res =>{
+          if(res.code === 1){
 
+            //滚动到底部
+            window.scrollTo(0, document.body.scrollHeight)
+
+            a.name= this.myName
+            a.comment =reply
+            a.headImg = this.myHeader
+            a.time = time
+            a.commentNum = 0
+            a.like = 0
+            a.id = res.entity.id
+            a.reply = []
+            this.comments.push(a)
+            this.replyComment = ''
+            input.innerHTML = '';
+            this.$message({
+              showClose: true,
+              type:'success',
+              message:'评论成功'
+            })
+          }else {
+            this.$message({
+              showClose: true,
+              type:'error',
+              message:'评论失败'
+            })
+          }
+        })
       }
     },
     sendCommentReply(i){
+      console.log(i)
+      console.log(this.toId, this.to)
       if(!this.replyComment){
         this.$message({
           showClose: true,
@@ -213,22 +267,52 @@ export default {
         let a ={}
         let timeNow = new Date().getTime();
         let time= this.dateStr(timeNow);
-        a.from= this.myName
-        a.to = this.to
-        a.fromHeadImg = this.myHeader
-        a.comment =this.replyComment
-        a.time = time
-        a.commentNum = 0
-        a.like = 0
-        this.comments[i].reply.push(a)
-        this.replyComment = ''
-        document.getElementsByClassName("reply-comment-input")[i].innerHTML = ""
+        let reply = document.getElementsByClassName("reply-comment-input")[i].innerText;
+        //提交评论
+        const param = {
+          userId:this.myId,
+          username:this.myName,
+          headImg:this.myHeader,
+          comment:reply,
+          floorId: this.comments[i].id,
+          toId: this.toId,
+          type:"1"
+        }
+        console.log(param)
+        api.getCommentMsg(param).then(res =>{
+          if(res.code === 1){
+            a.from= this.myName
+            a.to = this.to
+            a.fromHeadImg = this.myHeader
+            a.comment =reply
+            a.time = time
+            a.commentNum = 0
+            a.like = 0
+            a.id = res.entity.id
+            this.comments[i].reply.push(a)
+            this.replyComment = ''
+            document.getElementsByClassName("reply-comment-input")[i].innerHTML = ""
+            this.$message({
+              showClose: true,
+              type:'success',
+              message:'评论成功'
+            })
+          }else {
+            this.$message({
+              showClose: true,
+              type:'error',
+              message:'评论失败'
+            })
+          }
+        })
+
       }
     },
     onDivInput: function(e) {
       this.replyComment = e.target.innerHTML;
     },
     dateStr(date){
+
       //获取js 时间戳
       var time=new Date().getTime();
       //去掉 js 时间戳后三位，与php 时间戳保持一致

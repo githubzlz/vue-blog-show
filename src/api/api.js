@@ -21,7 +21,14 @@ const api = {
     },
     getDate(){
         return get('/manage/thistime');
+    },
+    getWebComments(){
+        return get('/comment/allwebsitecomment');
+    },
+    getCommentMsg(param){
+        return post('/comment/create', param);
     }
+
 }
 export {
     api
