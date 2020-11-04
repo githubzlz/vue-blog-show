@@ -1,9 +1,9 @@
 <template>
-  <div class="index">
+  <div class="index" style="margin: 0 auto">
     <div class="header" id="header_top1" style="position: fixed">
       <v-header></v-header>
     </div>
-    <div class="body" style="position: relative; top: 90px">
+    <div class="body" style="position: relative; top: 90px; max-width: 1960px; margin: 0 auto">
       <div class="body_top">
         <div class="background_left">
           <div class="info">
@@ -13,17 +13,14 @@
               <div style="position: absolute; right: 8px; bottom: 360px">
                 <span style="writing-mode: vertical-lr">Share Me</span>
               </div>
-              <div style="position: absolute; right: 3px; bottom: 320px; cursor: pointer; background-color: white; border-radius: 30px; width: 23px; height: 23px">
+              <div style="position: absolute; right: 3px; bottom: 320px; cursor: pointer; background-color: white; border-radius: 30px; width: 23px; height: 23px;" v-on:click="toQQShare">
                 <img class="icon" src="../../assets/image/icon_qq.png" alt="" style="margin-left: -1px; margin-top: -1px">
               </div>
               <div style="position: absolute; right: 3px; bottom: 280px; cursor: pointer">
-                <img class="icon" src="../../assets/image/icon_wechat.png" alt="">
-              </div>
-              <div style="position: absolute; right: 3px; bottom: 240px; cursor: pointer; background-color: white; border-radius: 30px; width: 23px; height: 23px">
-                <img class="icon" src="../../assets/image/icon_qq.png" alt="" style="margin-left: -1px; margin-top: -1px">
+                <i class="el-icon-share" style="cursor: pointer;height: 24px; font-size: 25px" v-on:click="copyLink"></i>
               </div>
             </div>
-            <div style="height: 150px; width: 2px; background-color: rgba(0,0,0,0.5); position: absolute; right: 15px; bottom: 80px">
+            <div style="height: 150px; width: 2px; background-color: rgba(0,0,0,0.5); position: absolute; right: 15px; bottom: 110px">
             </div>
           </div>
         </div>
@@ -44,7 +41,8 @@
                          ref="carousel"
                          v-on:change="((pre) => {change(pre)})">
               <el-carousel-item v-for="(item, index) in carouselData" :key="index">
-                <img :src="item.url" alt="">
+                <div :style=" 'width: 100%; height: 100%; background: url('+item.url+') 0 0 / 100% 100% no-repeat;'">
+                </div>
               </el-carousel-item>
             </el-carousel>
           </div>
@@ -78,31 +76,89 @@
         </el-col>
         <el-col :span="5  ">
           <div style="width: 100%;">
-            <el-card  shadow="hover" style="background-color: rgb(245,247,252); margin: 20px">
+            <el-card  shadow="hover" style="background-color: rgb(245,255,255); margin: 20px;">
               <div style="padding: 14px; text-align: left">
-                <el-input
-                    placeholder="请输入内容"
-                    prefix-icon="el-icon-search"
-                    v-model="searchInput"
-                    @keyup.enter="search()">
-                  <el-button slot="append" icon="el-icon-search" v-on:click="search"></el-button>
-                </el-input>
+                <div class="title">
+                  <el-icon class="el-icon-s-data" style="margin-right: 10px; "></el-icon>
+                  网站统计
+                </div>
+                <div class="divider_self"></div>
+                <el-divider content-position="left">今日</el-divider>
+                <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
+                  <div style="display: inline-block; width: 150px;
+                        margin-left: 16px; font-size: 16px;">
+                    访问量
+                  </div>
+                  <div style="display: inline-block; font-family: 等线;">
+                    {{ statistics.pvToday}}
+                  </div>
+                </div>
+                <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
+                  <div style="display: inline-block; width: 150px;
+                        margin-left: 16px; font-size: 16px;">
+                    新文章数量
+                  </div>
+                  <div style="display: inline-block; font-family: 等线;">
+                    {{ statistics.blogToday}}
+                  </div>
+                </div>
+                <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
+                  <div style="display: inline-block; width: 150px;
+                        margin-left: 16px; font-size: 16px;">
+                    阅读量
+                  </div>
+                  <div style="display: inline-block; font-family: 等线;">
+                    {{ statistics.readingToday}}
+                  </div>
+                </div>
+                <el-divider content-position="left">总计</el-divider>
+                <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
+                  <div style="display: inline-block; width: 150px;
+                        margin-left: 16px; font-size: 16px;">
+                    访问量
+                  </div>
+                  <div style="display: inline-block; font-family: 等线;">
+                    {{ statistics.pvTotal}}
+                  </div>
+                </div>
+                <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆; ">
+                  <div style="display: inline-block; width: 150px;
+                        margin-left: 16px; font-size: 16px;">
+                    文章数量
+                  </div>
+                  <div style="display: inline-block; font-family: 等线;">
+                    {{ statistics.blogTotal}}
+                  </div>
+                </div>
+                <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
+                  <div style="display: inline-block; width: 150px;
+                        margin-left: 16px; font-size: 16px;">
+                    阅读量
+                  </div>
+                  <div style="display: inline-block; font-family: 等线;">
+                    {{ statistics.readingTotal}}
+                  </div>
+                </div>
               </div>
             </el-card>
-            <el-card  shadow="hover" style="background-color: rgb(245,247,252); margin: 20px">
+            <el-card  shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
               <div style="padding: 14px; text-align: left">
                 <div class="title">
                   <el-icon class="el-icon-notebook-1" style="margin-right: 10px; "></el-icon>
                   热门文章
                 </div>
                 <div class="divider_self"></div>
-                <div class="articleBack" v-for="(item,index) in sideList">
+                <div class="articleBack" v-for="(item,index) in sideList" :key="index">
                   <img class="articleBackImg" :src="item.imgSrc" alt="">
                   <div class="articleBackGround">
-                    <div class="read_button" >阅读</div>
+                    <div class="read_button" v-on:click="toDetail(item.id)">阅读</div>
                   </div>
                   <div class="articleTop">
                     Top {{index+1}}
+                  </div>
+                  <div style="position: absolute; right: 10px; top: 5px; color: rgb(205,181,66); height: 25px;">
+                    <div style="margin-right: 3px; height: 25px; display: inline-block; vertical-align: middle">{{item.orderNum}}</div>
+                    <div class="icon_my"></div>
                   </div>
                   <div class="articleTitle">
                     {{item.title}}
@@ -116,20 +172,20 @@
                 </div>
               </div>
             </el-card>
-            <el-card  shadow="hover" style="background-color: rgb(245,247,252); margin: 20px">
+            <el-card  shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
               <div style="padding: 14px; text-align: left">
                 <div class="title">
                   <el-icon class="el-icon-collection" style="margin-right: 10px"></el-icon>
                   博文分类
                 </div>
                 <div class="divider_self" style="background-color: #baa667"></div>
-                <div class="sort_title" v-for="item in typeList">
-                  <div class="sort_title_left">{{ item.type }}</div>
+                <div class="sort_title" v-for="(item,index) in typeList" :key="index" v-on:click="clickTypeList(item.type, item.typeName)">
+                  <div class="sort_title_left">{{ item.typeName }}</div>
                   <div class="sort_title_right">{{ item.number }}</div>
                 </div>
               </div>
             </el-card>
-            <el-card  shadow="hover" style="background-color: rgb(245,247,252); margin: 20px">
+            <el-card  shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
               <div style="padding: 14px; text-align: left; position: relative">
                 <div class="title">
                   <el-icon class="el-icon-price-tag" style="margin-right: 10px"></el-icon>
@@ -141,13 +197,13 @@
                 </div>
                 <div class="divider_self" style="background-color: coral"></div>
                 <div class="cloud">
-                  <div v-for="(item) in tagList" class="tag">
-                    {{ item }}
+                  <div v-for="(item,index) in tagList" class="tag" :key="index" v-on:click="clickTypeList(item.type, item.name)">
+                    {{ item.name }}
                   </div>
                 </div>
               </div>
             </el-card>
-            <el-card  shadow="hover" style="background-color: rgb(245,247,252); margin: 20px">
+            <el-card  shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
               <div style="padding: 14px; text-align: left">
                 <div class="title">
                   <el-icon class="el-icon-monitor" style="margin-right: 10px"></el-icon>
@@ -157,18 +213,18 @@
                 <div>
                   <el-input style="margin-top: 10px; margin-bottom: 20px"
                             placeholder="请输入称呼"
-                            v-model="searchInput">
+                            v-model="searchInputName">
                     <template slot="prepend">称呼</template>
                   </el-input>
                 </div>
                 <div>
                   <el-input style="margin-top: 10px; margin-bottom: 20px"
                             placeholder="请输入联系方式"
-                            v-model="searchInput">
+                            v-model="searchInputContact">
                     <el-select v-model="select" slot="prepend" style="width: 80px">
-                      <el-option label="QQ" value="1"></el-option>
-                      <el-option label="微信" value="2"></el-option>
-                      <el-option label="邮箱" value="3"></el-option>
+                      <el-option label="QQ" value="QQ"></el-option>
+                      <el-option label="微信" value="微信"></el-option>
+                      <el-option label="邮箱" value="邮箱"></el-option>
                     </el-select>
                   </el-input>
                 </div>
@@ -182,8 +238,11 @@
                   </el-input>
                 </div>
                 <div style="margin-top: 10px; text-align: center">
-                  <el-button round>清空</el-button>
-                  <el-button round>提交</el-button>
+                  <el-button round v-on:click="clearAll()">清空</el-button>
+                  <el-button round v-on:click="commentClick()">留言</el-button>
+                  <el-button round v-on:click="privateClick()">私信</el-button>
+                </div>
+                <div id="message" style="color: red; font-size: 13px; text-align: center; margin-top: 10px">
                 </div>
               </div>
             </el-card>
@@ -217,6 +276,11 @@ export default {
   components:{WaterfallChild},
   data () {
     return{
+      copyContent:'点击获取分享链接',
+      qqShare:'http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=www.zlztsb.com&title=Zlz个人博客&desc=ZLZ博客分享生活趣事,学习笔记,技术干货。&summary=ZLZ博客分享生活趣事,学习笔记,技术干货&site=SOURCE&pics=IMAGE',
+      myUser:{},
+      searchInputName:'',
+      searchInputContact:'',
       searchInputC:'',
       upToShow: false,
       scrollIndex: 0,
@@ -231,17 +295,36 @@ export default {
       carouselData:[
         {
           url: '',
-          description:'Make The World a Better Place',
-          subDescription:'With Camera！',
+          description:'',
+          subDescription:'',
         }
       ],
+      statistics:{
+        pvToday:"0",
+        readingToday:"0",
+        blogToday:"0",
+        userToday:"0",
+        messageToday:"0",
+        pvTotal:"0",
+        readingTotal:"0",
+        blogTotal:"0",
+        userTotal:"0",
+        messageTotal:"0",
+        date:""
+      }
     }
   },
   created() {
-    api.getBanner(3).then(res =>{
+    this.myUser = localStorage.getItem('user');
+    api.getStatistics().then(res =>{
+      if(res.code === 1){
+        this.statistics = res.entity;
+      }
+    });
+    api.getBanner(5).then(res =>{
       this.carouselData = res.entity;
     });
-    api.getBlogListSide().then(res =>{
+    api.getHotBlog(3).then(res =>{
       this.sideList = res.entity;
     });
     api.getBlogTypeList().then(res =>{
@@ -257,10 +340,104 @@ export default {
     })
   },
   mounted(){
-    this.change(0);
     window.addEventListener('scroll', this.handleScroll, false);
+
   },
   methods: {
+    copyLink(){
+      var copy = function (e) {
+        e.preventDefault();
+        var text = "https://www.zlztsb.com"
+        if (e.clipboardData) {
+          e.clipboardData.setData('text/plain', text);
+        } else if (window.clipboardData) {
+          window.clipboardData.setData('Text', text);
+        }
+      }
+      window.addEventListener('copy', copy);
+      document.execCommand('copy');
+      window.removeEventListener('copy', copy);
+      this.$message({
+        dangerouslyUseHTMLString: true,
+        message: '<h3>链接已复制</h3>',
+        duration:1500,
+        center: true,
+        iconClass:"none"
+      });
+    },
+    clickTypeList(type, typeName){
+      this.$router.push({name:'classify',query: {type:type, typeName:typeName}})
+      console.log(type)
+    },
+    toQQShare(){
+      window.open(
+          this.qqShare, '_blank'
+      )
+    },
+    toDetail(blogId){
+      this.$router.push({name:'detail',params: {id:blogId}})
+    },
+    clearAll(){
+      this.select = 'QQ';
+      this.searchInputName=''
+      this.searchInputContact=''
+      this.textarea = ''
+    },
+    commentClick(){
+      const json = JSON.parse(localStorage.getItem('user'));
+      let name = json.username;
+      if(this.searchInputName){
+        name = this.searchInputName;
+        this.myUser = {
+          username: name,
+          userId:json.userId,
+          headImg:json.headImg
+        };
+        localStorage.setItem('user', JSON.stringify(this.myUser))
+      }
+      const param = {
+        userId:json.userId,
+        username:name,
+        headImg:json.headImg,
+        comment:this.textarea,
+        type:"1"
+      };
+
+      api.getCommentMsg(param).then(res =>{
+        if(res.code === 1){
+          document.getElementById("message").innerText = "感谢留言，您可以在留言板看到您的留言"
+        }else {
+          document.getElementById("message").innerText = "留言失败啦，请刷新页面后重试吧"
+        }
+      })
+    },
+    privateClick(){
+      const json = JSON.parse(localStorage.getItem('user'));
+      let name = json.username;
+      if(this.searchInputName){
+        name = this.searchInputName;
+        this.myUser = {
+          username: name,
+          userId:json.userId,
+          headImg:json.headImg
+        };
+        localStorage.setItem('user', JSON.stringify(this.myUser))
+      }
+      const param2 = {
+        contactsType: this.select,
+        contacts: this.searchInputContact,
+        content: this.textarea,
+        userId:json.userId,
+        name:name
+      }
+      api.personalLetter(param2).then(res =>{
+        if(res.code === 1){
+          document.getElementById("message").innerText = res.message
+        }else {
+          document.getElementById("message").innerText = "私信失败啦，请刷新页面后重试吧"
+        }
+      })
+    },
     setTagStyle(){
       const tags = document.getElementsByClassName("tag");
       for (let i = 0; i < tags.length; i++) {
@@ -375,7 +552,18 @@ export default {
 </script>
 
 <style scoped>
+  .icon_my{
+    display: inline-block;
+    width: 20px;
+    height: 25px;
+    background-image: url('../../assets/image/icon_hot.png');
+    background-size: 20px 20px;
+    background-position-y: 4px;
+    background-repeat: no-repeat;
+  }
   .tag{
+    font-weight: bolder;
+    font-family: "微软雅黑 Light";
     cursor: pointer;
     padding: 2px;
     margin: 4px;
@@ -537,7 +725,7 @@ export default {
     font-family: test_zlz;
     position: absolute;
     text-align: left;
-    color: white;
+    color: rgba(244,244,244,0.85);
     font-size: 45px;
     left: 0;
     bottom: 20px;
@@ -547,7 +735,7 @@ export default {
     font-family: test_zlz;
     position: absolute;
     text-align: left;
-    color: white;
+    color: rgba(244,244,244,0.85);
     font-size: 45px;
     left: 900px;
     bottom: 20px;
@@ -575,7 +763,7 @@ export default {
     display: inline-block;
     height: 780px;
     width: 70%;
-    background-color: #2a7197;
+    background-image: linear-gradient(to right, #f6e268 0%, #20a9bf 100%);
   }
   .background_right{
     position: relative;

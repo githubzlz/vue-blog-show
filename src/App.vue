@@ -19,6 +19,34 @@ export default {
       this.$nextTick(()=>{
         this.routerAlive = true;
       });
+    },
+    generateUUID() {
+      let one = new Date().getTime().toString();
+      let two = Math.floor(Math.random()*100000000);
+      if(two%2 === 1){
+        return one.substring(5, one.length) + '' + two
+      }
+      return two + one.substring(5, one.length);
+    },
+    getRandomRgba(){
+      let a = Math.floor(Math.random()*255);
+      let b = Math.floor(Math.random()*255);
+      let c = Math.floor(Math.random()*255);
+      return `rgba(${a},${b},${c},1)`;
+    },
+    
+  },
+  created() {
+    let user = localStorage.getItem('user');
+    if(!user){
+      let userId = this.generateUUID();
+      let headImg = this.getRandomRgba();
+      user = {
+        userId: userId,
+        username: '游客'+userId,
+        headImg: headImg,
+      };
+      localStorage.setItem('user', JSON.stringify(user))
     }
   }
 }

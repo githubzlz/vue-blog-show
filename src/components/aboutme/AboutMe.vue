@@ -4,8 +4,12 @@
       <el-icon class="el-icon-caret-left"></el-icon>
       返回首页
     </div>
+    <div style="font-size: 80px; font-family: 华文彩云;position:fixed;top: 30%; right: 50%; transform: translate(50%)" class="developing">
+      开发中。。。
+    </div>
     <div id="main">
       <div id="page1" class="page">
+
         <div class="el-icon-arrow-down-c">
           <el-icon class="el-icon-arrow-down"></el-icon>
         </div>
@@ -152,10 +156,16 @@ export default {
         div.animate({fontSize:27},500);
         div.animate({fontSize:25},1000,startAnimation);
       }
+      const developing = $(".developing");
+      startAnimation1();
+      function startAnimation1(){
+        developing.animate({fontSize:85},100);
+        developing.animate({fontSize:80},500);
+        developing.animate({fontSize:85},600,startAnimation1);
+      }
     });
     $(".back-index").click(function () {
-      console.log("1111111111")
-      window.location = ("#/home");
+      window.location = ("/home");
     });
     this.start();
   },

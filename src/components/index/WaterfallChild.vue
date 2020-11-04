@@ -2,85 +2,122 @@
   <div class="container-water-fall">
     <el-row>
       <el-col :span="12">
-        <el-card v-if="noData" shadow="hover" style="background-color: rgb(245,247,252); margin: 20px">
+        <el-card v-if="noData" shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
           暂无数据
         </el-card>
         <div v-for="(item,index) in list1" :key="index">
-          <el-card v-if="item.imgShow === 1" shadow="hover" style="background-color: rgb(245,247,252); margin: 20px">
+          <el-card v-if="item.blogRecommend.imageUrl != null" shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
             <div class="image_div">
               <div class="background">
               </div>
-              <img :src="item.imgSrc" class="image">
+              <img :src="item.blogRecommend.imageUrl" class="image" v-on:click="toDetail(item)">
             </div>
             <div style="padding: 14px; text-align: left">
               <div class="title" v-on:click="toDetail(item)">{{item.title}}</div>
               <div class="bottom clearfix">
                 <i class="el-icon-date"></i>
                 <time class="time">{{getDate(item.lastModifiedTime)}}</time>
-                <i class="el-icon-chat-line-square" style="margin-left: 25px"></i>
-                <span style="margin-left: 5px">{{item.blogPublicInfos.comments}}</span>
+                <div style="display: inline-block; margin-right: 15px; margin-top: 10px">
+                  <div class="icon-my" style="margin-left: 25px; width: 18px; height: 18px; display: inline-block"/>
+                  <span style="margin-left: 5px;">{{item.blogPublicInfos.readings}}</span>
+                </div>
+                <div style="display: inline-block; margin-right: 15px;margin-top: 10px">
+                  <i class="el-icon-star-off"></i>
+                  <span style="margin-left: 5px;">{{item.blogPublicInfos.goods}}</span>
+                </div>
+                <div style="display: inline-block;margin-right: 15px;margin-top: 10px">
+                  <i class="el-icon-chat-line-square" style="cursor: pointer" v-on:click="toDetail(item)"></i>
+                  <span style="margin-left: 5px; cursor: pointer" v-on:click="toDetail(item)">{{item.blogPublicInfos.comments}}</span>
+                </div>
               </div>
               <div class="card_body">
                 {{item.summary}}
               </div>
-              <el-button type="text" class="button">阅读全文 - ></el-button>
+              <el-button type="text" class="button" v-on:click="toDetail(item)">阅读全文 - ></el-button>
             </div>
           </el-card>
-          <el-card v-if="item.imgShow === 0" shadow="hover" style="background-color: rgb(245,247,252); margin: 20px">
+          <el-card v-if="item.blogRecommend.imageUrl == null" shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
             <div style="padding: 14px; text-align: left">
-              <div class="title">{{item.title}}</div>
+              <div class="title" v-on:click="toDetail(item)">{{item.title}}</div>
               <div class="bottom clearfix">
                 <i class="el-icon-date"></i>
                 <time class="time">{{getDate(item.lastModifiedTime)}}</time>
-                <i class="el-icon-chat-line-square" style="margin-left: 25px"></i>
-                <span style="margin-left: 5px">{{item.blogPublicInfos.comments}}</span>
+                <div style="display: inline-block; margin-right: 15px; margin-top: 10px">
+                  <div class="icon-my" style="margin-left: 25px; width: 18px; height: 18px; display: inline-block"/>
+                  <span style="margin-left: 5px;">{{item.blogPublicInfos.readings}}</span>
+                </div>
+                <div style="display: inline-block; margin-right: 15px;margin-top: 10px">
+                  <i class="el-icon-star-off"></i>
+                  <span style="margin-left: 5px;">{{item.blogPublicInfos.goods}}</span>
+                </div>
+                <div style="display: inline-block;margin-right: 15px;margin-top: 10px">
+                  <i class="el-icon-chat-line-square" style="cursor: pointer" v-on:click="toDetail(item)"></i>
+                  <span style="margin-left: 5px; cursor: pointer" v-on:click="toDetail(item)">{{item.blogPublicInfos.comments}}</span>
+                </div>
               </div>
               <div class="card_body">
                 {{item.summary}}
               </div>
-              <el-button type="text" class="button">阅读全文 - ></el-button>
+              <el-button type="text" class="button" v-on:click="toDetail(item)">阅读全文 - ></el-button>
             </div>
           </el-card>
         </div>
       </el-col>
       <el-col :span="12">
-        <el-card v-if="noData" shadow="hover" style="background-color: rgb(245,247,252); margin: 20px">
-          暂无数据
-        </el-card>
         <div v-for="(item,index) in list2" :key="index">
-          <el-card v-if="item.imgShow === 1" shadow="hover" style="background-color: rgb(245,247,252); margin: 20px">
+          <el-card v-if="item.blogRecommend.imageUrl != null" shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
             <div class="image_div">
               <div class="background">
               </div>
-              <img :src="item.imgSrc" class="image">
+              <img :src="item.blogRecommend.imageUrl" class="image" v-on:click="toDetail(item)">
             </div>
             <div style="padding: 14px; text-align: left">
-              <div class="title">{{item.title}}</div>
+              <div class="title" v-on:click="toDetail(item)">{{item.title}}</div>
               <div class="bottom clearfix">
                 <i class="el-icon-date"></i>
                 <time class="time">{{getDate(item.lastModifiedTime)}}</time>
-                <i class="el-icon-chat-line-square" style="margin-left: 25px"></i>
-                <span style="margin-left: 5px">{{item.blogPublicInfos.comments}}</span>
+                <div style="display: inline-block; margin-right: 15px; margin-top: 10px">
+                  <div class="icon-my" style="margin-left: 25px; width: 18px; height: 18px; display: inline-block"/>
+                  <span style="margin-left: 5px;">{{item.blogPublicInfos.readings}}</span>
+                </div>
+                <div style="display: inline-block; margin-right: 15px;margin-top: 10px">
+                  <i class="el-icon-star-off"></i>
+                  <span style="margin-left: 5px;">{{item.blogPublicInfos.goods}}</span>
+                </div>
+                <div style="display: inline-block;margin-right: 15px;margin-top: 10px">
+                  <i class="el-icon-chat-line-square" style="cursor: pointer" v-on:click="toDetail(item)"></i>
+                  <span style="margin-left: 5px; cursor: pointer" v-on:click="toDetail(item)">{{item.blogPublicInfos.comments}}</span>
+                </div>
               </div>
               <div class="card_body">
                 {{item.summary}}
               </div>
-              <el-button type="text" class="button">阅读全文 - ></el-button>
+              <el-button type="text" class="button" v-on:click="toDetail(item)">阅读全文 - ></el-button>
             </div>
           </el-card>
-          <el-card v-if="item.imgShow === 0" shadow="hover" style="background-color: rgb(245,247,252); margin: 20px">
+          <el-card v-if="item.blogRecommend.imageUrl == null" shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
             <div style="padding: 14px; text-align: left">
-              <div class="title">{{item.title}}</div>
+              <div class="title" v-on:click="toDetail(item)">{{item.title}}</div>
               <div class="bottom clearfix">
                 <i class="el-icon-date"></i>
                 <time class="time">{{getDate(item.lastModifiedTime)}}</time>
-                <i class="el-icon-chat-line-square" style="margin-left: 25px"></i>
-                <span style="margin-left: 5px">{{item.blogPublicInfos.comments}}</span>
+                <div style="display: inline-block; margin-right: 15px; margin-top: 10px">
+                  <div class="icon-my" style="margin-left: 25px; width: 18px; height: 18px; display: inline-block"/>
+                  <span style="margin-left: 5px;">{{item.blogPublicInfos.readings}}</span>
+                </div>
+                <div style="display: inline-block; margin-right: 15px;margin-top: 10px">
+                  <i class="el-icon-star-off"></i>
+                  <span style="margin-left: 5px;">{{item.blogPublicInfos.goods}}</span>
+                </div>
+                <div style="display: inline-block;margin-right: 15px;margin-top: 10px">
+                  <i class="el-icon-chat-line-square" style="cursor: pointer" v-on:click="toDetail(item)"></i>
+                  <span style="margin-left: 5px; cursor: pointer" v-on:click="toDetail(item)">{{item.blogPublicInfos.comments}}</span>
+                </div>
               </div>
               <div class="card_body">
                 {{item.summary}}
               </div>
-              <el-button type="text" class="button">阅读全文 - ></el-button>
+              <el-button type="text" class="button" v-on:click="toDetail(item)">阅读全文 - ></el-button>
             </div>
           </el-card>
         </div>
@@ -116,13 +153,28 @@ export default {
           summary:'',
           imgSrc:'',
           blogPublicInfos:{
-            comments: 0
-          }
+            comments: 0,
+            goods: 0,
+            readings: 0
+          },
+          blogRecommend:{
+            imageUrl: null
+          },
         }
       ],
       list2:[
         {
           imgShow:'',
+          summary:'',
+          imgSrc:'',
+          blogPublicInfos:{
+            comments: 0,
+            goods: 0,
+            readings: 0
+          },
+          blogRecommend:{
+            imageUrl: null
+          },
           lastModifiedTime:''
         }
       ],
@@ -148,7 +200,7 @@ export default {
   },
   methods:{
     toDetail(item){
-      this.$router.push({name:'detail',query: {id:item.id}})
+      this.$router.push({name:'detail',params: {id:item.id}})
     },
     getDate(date){
       let dt = new Date(date);
@@ -201,6 +253,12 @@ export default {
 </script>
 
 <style scoped>
+
+  .icon-my{
+    background-image: url("../../assets/image/icon_eye.png");
+    background-size: 18px 18px;
+    background-position-y: 2px;
+  }
   .image_div:hover .background{
     transform: translate(140%, 0);
   }
@@ -215,6 +273,7 @@ export default {
     transform: translate(-100%, 0);
   }
   .image{
+    cursor: pointer;
     border-radius: 5px;
     transition: all 700ms;
     width: 100%;

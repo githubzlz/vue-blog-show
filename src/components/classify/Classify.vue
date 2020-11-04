@@ -1,47 +1,62 @@
 <template>
-  <div class="classify">
+  <div class="classify" style="scroll-behavior: smooth">
     <div class="header" id="header_top" style="position: fixed">
       <v-header></v-header>
     </div>
-    <div class="body" style="position:relative ; top: 90px">
-      <div class="body_top">
-        <div class="title">技术博文</div>
-        <div class="sub_title">人生有很多关隘，有很多选择，但唯独在技术这条路上，我觉得是要一直走下去的！</div>
+    <div id="maodian" style="position: absolute; top: 620px;"></div>
+    <div class="body" style="position:relative ; top: 90px;max-width: 1960px; margin: 0 auto">
+      <div class="body_top" :style="`height: ${height}px`">
+        <div class="title">{{ words[this.$route.query.type].title }}</div>
+        <div class="sub_title" v-if="this.$route.query.type == 1">
+          {{ words[this.$route.query.type].subTitle }}
+          <div style="width: 100%; margin: 0; position: absolute; top: 50px">
+            {{ words[this.$route.query.type].subTitleC }}
+          </div>
+        </div>
+        <div class="sub_title" v-if="this.$route.query.type == 0">
+          {{ words[this.$route.query.type].subTitle }}
+          <div style="width: 100%; margin: 0; position: absolute; top: 130px">
+            <span style="margin: 0 20px">·传感技术·</span>
+            <span style="margin: 0 20px">·通信技术·</span>
+            <span style="margin: 0 20px">·计算机技术·</span>
+          </div>
+        </div>
       </div>
       <el-row style="margin-top: 30px; margin-bottom: 20px">
-        <el-col :span="4" > <br> </el-col>
+        <el-col :span="3" > <br> </el-col>
         <el-col :span="5">
           <div id="keep-top">
             <el-card style="margin: 20px">
               <div style="padding: 14px; text-align: left">
                 <div class="class_title">
-                  <span>分类检索:</span>
-                  <span style="float: right">技术</span>
+                  <span>全局检索:</span>
+                  <span style="float: right">{{ words[this.$route.query.type].words }}</span>
                 </div>
-                <div style="margin-top: 20px">
-                  <el-cascader
-                      placeholder="试试搜索：Spring"
-                      :options="options"
-                      filterable
-                      checkStrictly
-                      v-model="searchInput"
+                <div style="margin-top: 20px;">
+                  <el-autocomplete
+                      style="width: 100%;"
+                      class="inline-input"
+                      v-model="param.search"
+                      :fetch-suggestions="getTypeList"
+                      :placeholder="words[this.$route.query.type].search"
+                      @select="getInputValue"
+                      @keyup.enter.native="getInputValue"
                   >
-                  </el-cascader>
-                  <el-button slot="append" icon="el-icon-search" v-on:click="getInputValue"></el-button>
+                    <el-button slot="append" icon="el-icon-search" v-on:click="getInputValue"></el-button>
+                  </el-autocomplete>
                 </div>
               </div>
             </el-card>
             <el-card style="margin: 20px">
               <div style="padding: 14px; text-align: left">
                 <div class="class_title">
-                  <span>全部分类:</span>
+                  <span>分类检索:</span>
                   <div class="divider_self" style="background-color: #000000;"></div>
                 </div>
                 <div style="font-size: 20px">
                   <el-tree
                       :data="options"
                       :props="defaultProps"
-                      accordion
                       @node-click="handleNodeClick">
                   </el-tree>
                 </div>
@@ -53,12 +68,9 @@
                   <span>推荐阅读:</span>
                   <div class="divider_self" style="background-color: #b12424;"></div>
                 </div>
-                <div class="recommend" v-for="item in 6">
+                <div class="recommend" v-for="(item,index) in comment" :key="index" v-on:click="toDetail(item.id)">
                   <div class="recommend_title">
-                    好吃的汉堡
-                  </div>
-                  <div class="recommend_type">
-                    美食
+                    {{item.title}}
                   </div>
                 </div>
               </div>
@@ -70,199 +82,94 @@
                   归档
                   <div class="divider_self" style="background-color: #baa667"></div>
                 </div>
-                <div class="sort_title">
+                <div class="sort_title" v-for="(item,index) in timeFiling" :key="index" v-on:click="timeFilingClick(item.date)">
                   <div class="sort_title_left">
-                    2020年7月
+                    {{getYearMonthDate(item.date)}}
                   </div>
-                  <div class="sort_title_right">30</div>
-                </div>
-                <div class="sort_title">
-                  <div class="sort_title_left">
-                    2020年6月
-                  </div>
-                  <div class="sort_title_right">30</div>
-                </div>
-                <div class="sort_title">
-                  <div class="sort_title_left">
-                    2020年5月
-                  </div>
-                  <div class="sort_title_right">30</div>
-                </div>
-                <div class="sort_title">
-                  <div class="sort_title_left">
-                    2020年4月
-                  </div>
-                  <div class="sort_title_right">30</div>
-                </div>
-                <div class="sort_title">
-                  <div class="sort_title_left">more...</div>
-                  <div class="sort_title_right">300</div>
+                  <div class="sort_title_right">{{item.num}}</div>
                 </div>
               </div>
             </el-card>
           </div>
           <br>
         </el-col>
-        <el-col :span="10">
+        <el-col :span="12">
           <el-card style="margin-top: 20px">
             <div class="class_header">
               <el-icon class="el-icon-house"></el-icon>
               {{classTitle}}
             </div>
-            <div class="card_one" style="background-color: rgb(245,247,252); margin: 20px">
-              <div class="card_one_left">
-                <img class="card_one_img" style="width: 100%; height: 100%;" src="http://192.168.233.101/group1/M00/00/00/wKjpZV8rZeuAQL57ABlGo9Z_jnE577.jpg">
+            <div v-if="!resultEntity.list || resultEntity.list.length === 0">
+              <img style="width: 50%;" src="../../assets/image/empty.png"/>
+            </div>
+            <div v-for="(item,index) in resultEntity.list" :key="index">
+              <transition name="el-fade-in-linear">
+                <div class="card_one" style="background-color: rgb(255,255,255); margin: 20px;"
+                   v-if="item.blogRecommend.imageUrl !== null" >
+                <div class="card_one_left">
+                  <img class="card_one_img" style="width: 100%; height: 100%;" :src="item.blogRecommend.imageUrl">
+                  <div style="position: absolute; left: 5px; bottom: 5px; color: white; background-color: rgba(0,0,0,0.5); padding: 3px;border-radius: 5px">
+                    <i class="el-icon-date"></i>
+                    <time class="time">{{getDate(item.createdTime)}}</time>
+                  </div>
+                </div>
+                <div class="card_one_right">
+                  <el-tooltip :content="item.title" placement="bottom" effect="light">
+                    <div class="list_title" v-on:click="toDetail(item.id)">
+                      {{item.title}}
+                    </div>
+                  </el-tooltip>
+                  <div class="card_one_right_info" style="-webkit-line-clamp: 4;">
+                    {{item.summary}}
+                  </div>
+                  <div class="card_one_right_date">
+                    <i class="el-icon-chat-line-square" style="margin-left: 20px"></i>
+                    <span style="margin-left: 5px">{{item.blogPublicInfos.comments}}</span>
+                    <i class="el-icon-reading" style="margin-left: 10px; color: #66adab"></i>
+                    <span style="margin-left: 5px">{{item.blogPublicInfos.readings}}</span>
+                  </div>
+                  <el-button type="text" class="button" style="padding:0;position: absolute; bottom: 4px; right: 0" v-on:click="toDetail(item.id)">阅读全文 - ></el-button>
+                </div>
               </div>
-              <div class="card_one_right">
-                <div class="list_title">像素处理</div>
+              </transition>
+              <transition name="el-fade-in-linear">
+                <div class="card_two" style="background-color: rgb(255,255,255); margin: 20px;" v-if="item.blogRecommend.imageUrl === null">
+                <el-tooltip :content="item.title" placement="bottom" effect="light">
+                  <div class="list_title" v-on:click="toDetail(item.id)">
+                      {{item.title}}
+                  </div>
+                </el-tooltip>
                 <div class="card_one_right_info">
-                  px为绝对静止像素单元，如果模式字体大小篡改，而缩进px单位值是不随字体大小而篡改，那么缩进就不是恰恰2个笔墨职位空格缩进间距了，修正翰墨大小就要再修正缩进值，相比贫穷困难。
+                  {{item.summary}}
                 </div>
-                <div class="card_one_right_date">
+                <div class="card_one_right_date" style="bottom: 20px">
                   <i class="el-icon-date"></i>
-                  <time class="time">2020/07/30 11:49:38</time>
+                  <time class="time">{{getDate(item.createdTime)}}</time>
                   <i class="el-icon-chat-line-square" style="margin-left: 20px"></i>
-                  <span style="margin-left: 5px">230</span>
-                  <i class="el-icon-star-on" style="margin-left: 10px; color: #66adab"></i>
-                  <span style="margin-left: 5px">23000</span>
+                  <span style="margin-left: 5px">{{item.blogPublicInfos.comments}}</span>
+                  <i class="el-icon-reading" style="margin-left: 10px; color: #66adab"></i>
+                  <span style="margin-left: 5px">{{item.blogPublicInfos.readings}}</span>
                 </div>
-                <el-button type="text" class="button" style="padding:0;position: absolute; bottom: 4px; right: 0">阅读全文 - ></el-button>
+                <el-button type="text" class="button" style="padding:0;position: absolute; bottom: 24px; right: 20px" v-on:click="toDetail(item.id)">阅读全文 - ></el-button>
               </div>
+              </transition>
+              <div style="width: 100%; height: 2px; background-color: #efeee7"></div>
             </div>
-            <div class="card_one" style="background-color: rgb(245,247,252); margin: 20px">
-              <div class="card_one_left">
-                <img class="card_one_img" style="width: 100%; height: 100%;" src="http://192.168.233.101/group1/M00/00/00/wKjpZV8rZoCAPZtvAA5lGWi2HMU866.jpg">
-              </div>
-              <div class="card_one_right">
-                <div class="list_title">像素处理</div>
-                <div class="card_one_right_info">
-                  px为绝对静止像素单元，如果模式字体大小篡改，而缩进px单位值是不随字体大小而篡改。
-                </div>
-                <div class="card_one_right_date">
-                  <i class="el-icon-date"></i>
-                  <time class="time">2020/07/30 11:49:38</time>
-                  <i class="el-icon-chat-line-square" style="margin-left: 20px"></i>
-                  <span style="margin-left: 5px">230</span>
-                  <i class="el-icon-star-on" style="margin-left: 10px; color: #66adab"></i>
-                  <span style="margin-left: 5px">23000</span>
-                </div>
-                <el-button type="text" class="button" style="padding:0;position: absolute; bottom: 4px; right: 0">阅读全文 - ></el-button>
-              </div>
-            </div>
-            <div class="card_two" style="background-color: rgb(245,247,252); margin: 20px">
-              <div class="list_title">像素处理</div>
-              <div class="card_one_right_info" style="height: 60px">
-                px为绝对静止像素单元，如果模式字体大小篡改，而缩进px单位值是不随字体大小而篡改，那么缩进就不是恰恰2个笔墨职位空格缩进间距了，修正翰墨大小就要再修正缩进值，相比贫穷困难。
-              </div>
-              <div class="card_one_right_date" style="bottom: 20px">
-                <i class="el-icon-date"></i>
-                <time class="time">2020/07/30 11:49:38</time>
-                <i class="el-icon-chat-line-square" style="margin-left: 20px"></i>
-                <span style="margin-left: 5px">23</span>
-                <i class="el-icon-star-on" style="margin-left: 10px; color: #66adab"></i>
-                <span style="margin-left: 5px">23000</span>
-              </div>
-              <el-button type="text" class="button" style="padding:0;position: absolute; bottom: 24px; right: 20px">阅读全文 - ></el-button>
-            </div>
-            <div class="card_one" style="background-color: rgb(245,247,252); margin: 20px">
-              <div class="card_one_left">
-                <img class="card_one_img" style="width: 100%; height: 100%;" src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png">
-              </div>
-              <div class="card_one_right">
-                <div class="list_title">像素处理</div>
-                <div class="card_one_right_info">
-                  px为绝对静止像素单元，如果模式字体大小篡改，而缩进px单位值是不随字体大小而篡改，那么缩进就不是恰恰2个笔墨职位空格缩进间距了，修正翰墨大小就要再修正缩进值，相比贫穷困难。
-                </div>
-                <div class="card_one_right_date">
-                  <i class="el-icon-date"></i>
-                  <time class="time">2020/07/30 11:49:38</time>
-                  <i class="el-icon-chat-line-square" style="margin-left: 20px"></i>
-                  <span style="margin-left: 5px">230</span>
-                  <i class="el-icon-star-on" style="margin-left: 10px; color: #66adab"></i>
-                  <span style="margin-left: 5px">23000</span>
-                </div>
-                <el-button type="text" class="button" style="padding:0;position: absolute; bottom: 4px; right: 0">阅读全文 - ></el-button>
-              </div>
-            </div>
-            <div class="card_one" style="background-color: rgb(245,247,252); margin: 20px">
-              <div class="card_one_left">
-                <img class="card_one_img" style="width: 100%; height: 100%;" src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png">
-              </div>
-              <div class="card_one_right">
-                <div class="list_title">像素处理</div>
-                <div class="card_one_right_info">
-                  px为绝对静止像素单元，如果模式字体大小篡改，而缩进px单位值是不随字体大小而篡改，那么缩进就不是恰恰2个笔墨职位空格缩进间距了，修正翰墨大小就要再修正缩进值，相比贫穷困难。
-                </div>
-                <div class="card_one_right_date">
-                  <i class="el-icon-date"></i>
-                  <time class="time">2020/07/30 11:49:38</time>
-                  <i class="el-icon-chat-line-square" style="margin-left: 20px"></i>
-                  <span style="margin-left: 5px">230</span>
-                  <i class="el-icon-star-on" style="margin-left: 10px; color: #66adab"></i>
-                  <span style="margin-left: 5px">23000</span>
-                </div>
-                <el-button type="text" class="button" style="padding:0;position: absolute; bottom: 4px; right: 0">阅读全文 - ></el-button>
-              </div>
-            </div>
-            <div class="card_two" style="background-color: rgb(245,247,252); margin: 20px">
-              <div class="list_title">像素处理</div>
-              <div class="card_one_right_info" style="height: 60px">
-                px为绝对静止像素单元，如果模式字体大小篡改，而缩进px单位值是不随字体大小而篡改，那么缩进就不是恰恰2个笔墨职位空格缩进间距了，修正翰墨大小就要再修正缩进值，相比贫穷困难。
-              </div>
-              <div class="card_one_right_date" style="bottom: 20px">
-                <i class="el-icon-date"></i>
-                <time class="time">2020/07/30 11:49:38</time>
-                <i class="el-icon-chat-line-square" style="margin-left: 20px"></i>
-                <span style="margin-left: 5px">23</span>
-                <i class="el-icon-star-on" style="margin-left: 10px; color: #66adab"></i>
-                <span style="margin-left: 5px">23000</span>
-              </div>
-              <el-button type="text" class="button" style="padding:0;position: absolute; bottom: 24px; right: 20px">阅读全文 - ></el-button>
-            </div>
-            <div class="card_one" style="background-color: rgb(245,247,252); margin: 20px">
-              <div class="card_one_left">
-                <img class="card_one_img" style="width: 100%; height: 100%;" src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png">
-              </div>
-              <div class="card_one_right">
-                <div class="list_title">像素处理</div>
-                <div class="card_one_right_info">
-                  px为绝对静止像素单元，如果模式字体大小篡改，而缩进px单位值是不随字体大小而篡改，那么缩进就不是恰恰2个笔墨职位空格缩进间距了，修正翰墨大小就要再修正缩进值，相比贫穷困难。
-                </div>
-                <div class="card_one_right_date">
-                  <i class="el-icon-date"></i>
-                  <time class="time">2020/07/30 11:49:38</time>
-                  <i class="el-icon-chat-line-square" style="margin-left: 20px"></i>
-                  <span style="margin-left: 5px">230</span>
-                  <i class="el-icon-star-on" style="margin-left: 10px; color: #66adab"></i>
-                  <span style="margin-left: 5px">23000</span>
-                </div>
-                <el-button type="text" class="button" style="padding:0;position: absolute; bottom: 4px; right: 0">阅读全文 - ></el-button>
-              </div>
-            </div>
-            <div class="card_two" style="background-color: rgb(245,247,252); margin: 20px">
-              <div class="list_title">像素处理</div>
-              <div class="card_one_right_info" style="height: 60px">
-                px为绝对静止像素单元，如果模式字体大小篡改，而缩进px单位值是不随字体大小而篡改，那么缩进就不是恰恰2个笔墨职位空格缩进间距了，修正翰墨大小就要再修正缩进值，相比贫穷困难。
-              </div>
-              <div class="card_one_right_date" style="bottom: 20px">
-                <i class="el-icon-date"></i>
-                <time class="time">2020/07/30 11:49:38</time>
-                <i class="el-icon-chat-line-square" style="margin-left: 20px"></i>
-                <span style="margin-left: 5px">23</span>
-                <i class="el-icon-star-on" style="margin-left: 10px; color: #66adab"></i>
-                <span style="margin-left: 5px">23000</span>
-              </div>
-              <el-button type="text" class="button" style="padding:0;position: absolute; bottom: 24px; right: 20px">阅读全文 - ></el-button>
-            </div>
+
+
             <el-pagination
                 :hide-on-single-page="false"
                 background
                 layout="prev, pager, next"
-                :total="total">
+                :total="totalSize"
+                :current-page="this.param.pageInfo.pageNum"
+                @current-change="changePage"
+                v-if="resultEntity.list.length"
+                >
             </el-pagination>
           </el-card>
         </el-col>
-        <el-col :span="4">
+        <el-col :span="3">
           <br>
         </el-col>
       </el-row>
@@ -280,61 +187,156 @@
 
 <script>
 
+import {api} from "@/api/api";
+import $ from "jquery";
+
 export default {
   name: "Classify",
+  watch:{
+    '$route.query.type':function(){
+      location.reload();
+    },
+  },
   data(){
     return{
+      height:600,
+      words:[{
+        search:'试试搜索 JAVA',
+        words:'技术',
+        title:'技术博文',
+        subTitle:'IT - Information Technology 是指与信息相关的技术,ta主要由三部分组成',
+        subTitleC:''
+      },{
+        search:'试试搜索 博主',
+        words:'情感',
+        title:'情感博文',
+        subTitle:'We have been looking for, but it is her original already have; We always look in all directions, but missed you want, this is the reason why we still difficult to achieve',
+        subTitleC:'我们一直寻找的，却是自己原本早已拥有的；我们总是东张西望，唯独漏了自己想要的，这就是我们至今难以如愿以偿的原因。'
+      }],
+      totalSize: 0,
+      param: {
+        pageInfo:{
+          pageSize:10,
+          pageNum:1
+        },
+        startTime:'',
+        endTime:'',
+        search:''
+      },
+      typeList:[],
+      timeFiling:[],
+      comment:[],
       scrollIndex: 0,
       total:100,
       searchInput:'',
-      classTitle:'数据库',
-      options: [{
-        value: '数据库',
-        label: '数据库',
-        children: [{
-          value: 'MYSQL',
-          label: 'MYSQL',
-          children: [{
-            value: '索引',
-            label: '索引'
-          }, {
-            value: '主键',
-            label: '主键'
-          }, {
-            value: '优化',
-            label: '优化'
-          }, {
-            value: 'SQL',
-            label: 'SQL'
-          }]
-        }]
-        },{
-          value: 'JAVA',
-          label: 'JAVA',
-          children: [{
-            value: 'cexiangdaohang',
-            label: 'JAVA基础'
-          }, {
-            value: 'dingbudaohang',
-            label: 'Spring'
-          },{
-            value: 'dingbudaoha',
-            label: 'SpringBoot'
-          }]
-        }
-      ],
+      classTitle:'全部文章',
+      options: [],
       defaultProps: {
         children: 'children',
         label: 'label'
+      },
+      resultEntity:{
+        list:[]
       }
     }
   },
   methods:{
+    timeFilingClick(date){
+      if(!date || date === '更早'){
+        this.$router.push({name:'time'});
+        return;
+      }
+      this.classTitle = this.getYearMonthDate(date);
+      date = new Date(date);
+      let y = date.getFullYear();
+      let M = date.getMonth() + 1;
+      let e =  Math.round(M) +1;
+      if(M.toString().length === 1){
+        M = "0" + M.toString();
+      }
+      if(e.toString().length === 1){
+        e = "0" + e.toString();
+      }
+      let startTime = `${y}-${M}-01 00:00:00`
+      let endTime = `${y}-${e}-01 00:00:00`
+      const param = this.param;
+      param.startTime = startTime;
+      param.endTime = endTime;
+      param.search = '';
+      this.searchBlog(param);
+      document.getElementById("maodian").scrollIntoView();
+      setTimeout(()=>{
+        document.getElementById("header_top").style.position = "fixed";
+      },100)
+    },
+    getTypeList(queryString, cb){
+      let typeList = this.typeList;
+      let results = queryString ? typeList.filter(this.createFilter(queryString)) : typeList;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    createFilter(queryString){
+      return (restaurant) => {
+        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
+    changePage(val){
+      this.param.pageInfo.pageNum = val;
+      this.searchBlog(this.param);
+      document.getElementById("maodian").scrollIntoView();
+    },
+    getYearMonthDate(date){
+      if(date === '更早'){
+        return date;
+      }else {
+        let dt = new Date(date);
+        let y = dt.getFullYear();
+        let m = dt.getMonth() + 1;
+        return `${y}年 ${m}月`
+      }
+    },
+    toDetail(id){
+      this.$router.push({name:'detail',params: {id:id}})
+    },
+    getDate(date){
+      let dt = new Date(date);
+      let y = dt.getFullYear();
+      let M = dt.getMonth() + 1;
+      let d = dt.getDate();
+      let h = dt.getHours().toString();
+      let m = dt.getMinutes().toString();
+      if(m.length === 1){
+        m = '0'+m;
+      }
+      if(h.length === 1){
+        h = '0'+h;
+      }
+      return  `${y}/${M}/${d} ${h}:${m}`;
+    },
     getInputValue(){
-      this.classTitle = this.searchInput;
+      this.classTitle = this.param.search;
+      if('' === this.classTitle || !this.classTitle){
+        this.classTitle = "全部文章";
+      }
+      this.searchBlog(this.param);
     },
     handleNodeClick(data) {
+      // this.$router.push({name:'classify',query: {type:this.$route.query.type, typeName:data.label}})
+      this.param.startTime='';
+      this.getBlogList(data);
+    },
+    getBlogList(data){
       this.classTitle = data.label;
+      if('' === this.classTitle || !this.classTitle){
+        this.classTitle = "全部文章";
+      }
+      const param = this.param  ;
+      param.search = data.label;
+      this.searchBlog(param);
+      document.getElementById("maodian").scrollIntoView();
+      setTimeout(()=>{
+        document.getElementById("header_top").style.position = "fixed";
+      },100)
     },
     handleScroll2: function () {
       let scrollTop = window.pageYOffset || document.getElementById("header_top").scrollTop  || document.body.scrollTop;
@@ -347,8 +349,83 @@ export default {
         this.scrollIndex = scrollTop;
       }
     },
+    searchBlog(param){
+      if(param.search === '全部文章'){
+        param.search = '';
+      }
+      api.searchBlog(param, this.$route.query.type).then(res =>{
+        this.resultEntity =res.entity;
+        this.totalSize = Math.round(res.entity.totalSize);
+      })
+    }
+  },
+  created() {
+    api.getBlogTypes(this.$route.query.type).then(res =>{
+      if(res.code === 1 && res.entity){
+        let options = [];
+        let typeList = [];
+
+        const all = {
+          value:'',
+          label:'全部文章',
+        };
+        options.push(all);
+
+        res.entity.forEach(item =>{
+          const entity = {
+            value:item.name,
+            label:item.name,
+            children:[]
+          };
+
+          if(item.children){
+            item.children.forEach(child =>{
+              const entityC = {
+                value:child.name,
+                label:child.name,
+              };
+              typeList.push(entityC)
+              entity.children.push(entityC);
+            })
+          }
+          typeList.push(entity);
+          options.push(entity)
+        })
+        this.options = options;
+        this.typeList = typeList;
+      }
+    })
+    api.timeFiling(5, this.$route.query.type).then((res)=>{
+      this.timeFiling = res.entity;
+    });
+    api.getBlogListSide(10).then(res =>{
+      this.comment = res.entity;
+    });
+    this.searchBlog(this.param);
   },
   mounted() {
+    const typeName = this.$route.query.typeName;
+    if(typeName && typeName !== ''){
+      const data = {
+        label:typeName
+      }
+      this.getBlogList(data)
+      setTimeout(()=>{
+        document.getElementById("maodian").scrollIntoView();
+        setTimeout(()=>{
+          document.getElementById("header_top").style.position = "fixed";
+        },100)
+      }, 100)
+    }
+    $(document).ready(function(){
+      const div = $(".el-icon-arrow-down");
+      startAnimation();
+      function startAnimation(){
+        div.animate({marginTop:40},"normal");
+        div.animate({marginTop:10},"normal");
+        div.animate({marginTop:40},"normal",startAnimation);
+      }
+    });
     //document.getElementById("header_top").style.display = "none";
     window.addEventListener('scroll', this.handleScroll2, false);
   },
@@ -386,8 +463,7 @@ export default {
     margin: 15px auto;
   }
   .recommend:hover{
-    border: 1px solid #e3d2d2;
-    background-color: rgba(92, 195, 144, 0.5);
+    color: #41afd7;
   }
   .recommend{
     cursor: pointer;
@@ -400,7 +476,6 @@ export default {
   }
   .recommend_title{
     display: inline-block;
-    width: 80%;
     height: 30px;
   }
   .recommend_type{
@@ -409,7 +484,7 @@ export default {
     height: 30px;
   }
 
-  .class_title:hover .divider_self{
+  .el-card:hover .divider_self{
     width: 100%;
   }
   .card_one_img{
@@ -437,12 +512,18 @@ export default {
     font-family: 华文楷体;
     font-weight: bolder;
   }
+  .card_one_right_info:hover{
+    text-shadow:-8px 3px 4px rgba(0,0,0,0.1);
+  }
   .card_one_right_info{
+    transition: all 500ms;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
     text-indent:2em;
-    height: 90px;
     line-height: 25px;
-    display: table-cell;
     vertical-align: middle;
+    overflow: hidden;
   }
   .card_one_right_date{
     width: 100%;
@@ -464,6 +545,7 @@ export default {
     transform: scale(1.1);
   }
   .card_one_left{
+    position:relative;
     border-radius: 10px;
     height: 100%;
     overflow: hidden;
@@ -479,7 +561,13 @@ export default {
     display: inline-block;
     width: 60%;
   }
+
   .list_title{
+    transition: all 500ms;
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
     text-indent:30px;
     height: 30px;
     width: 100%;
@@ -513,8 +601,11 @@ export default {
     z-index: 99;
   }
   .sub_title{
+    position: relative;
+    margin: 0 auto;
     line-height: 100px;
     height: 300px;
+    width: 60%;
     color: white;
     font-size: 30px;
     font-family: test_zlz;
@@ -529,9 +620,10 @@ export default {
     font-family: test_zlz;
   }
   .body_top{
+    position: relative;
     height: 500px;
     overflow: hidden;
-    background: #050000;
+    background-image: linear-gradient(to right, #7ab8c2 0%, #b6b5af 100%);
     background-size: 100%;
   }
   .header{

@@ -1,5 +1,6 @@
 import axios from 'axios'
 import {base} from './base'
+
 // 创建axios实例
 axios.create({ timeout: 1000 * 12});
 // 设置post请求头

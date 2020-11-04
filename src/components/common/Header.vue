@@ -1,9 +1,9 @@
 <template>
-  <div class="header">
+  <div class="header" style="margin: 0 auto">
     <div style="background-color: white; height: 90px;overflow: hidden">
       <img style="width: 163px; height: 36px; margin-top: 30px;margin-left: 50px; display: inline-block; cursor: pointer"
            v-if="!complete"
-           alt="" src="../../../public/logo.png" >
+           alt="" src="../../assets/image/logo.png" >
       <ul v-if="complete2" id="header2" style="display: inline-block">
         <li >
           <router-link :to="'/home'" class="router-link">
@@ -17,7 +17,7 @@
         </li>
         <li >
           <router-link :to="'/classify'" class="router-link">
-            生活博文
+            情感博文
           </router-link>
         </li>
         <li >
@@ -32,7 +32,7 @@
         </li>
         <li>
           <router-link :to="'/about'" class="router-link">
-            网站信息
+            关于我
           </router-link>
         </li>
       </ul>
@@ -43,13 +43,13 @@
           </router-link>
         </li>
         <li class="li1">
-          <router-link :to="'/classify'" class="router-link">
+          <router-link :to="{name:'classify', query:{type:0}}" class="router-link">
             技术博文
           </router-link>
         </li>
         <li class="li1">
-          <router-link :to="'/classify'" class="router-link">
-            生活博文
+          <router-link :to="{name:'classify', query:{type:1}}" class="router-link">
+            情感博文
           </router-link>
         </li>
         <li class="li1 main">
@@ -58,7 +58,7 @@
               <div style="width: 60px; height: 1px; background-color: black; margin-bottom: 5px; margin-left: 20px"></div>
               <div style="width: 80px; height: 1px; background-color: black"></div>
             </div>
-            <img class="logo" alt="" src="../../../public/logo.png" style="width: 163px; height: 36px">
+            <img class="logo" alt="" src="../../assets/image/logo.png" style="width: 163px; height: 36px">
             <div class="line" style="margin-left: 20px">
               <div style="width: 60px; height: 1px; background-color: black; margin-bottom: 5px"></div>
               <div style="width: 80px; height: 1px; background-color: black"></div>
@@ -77,7 +77,7 @@
         </li>
         <li class="li1">
           <router-link :to="'/about'" class="router-link">
-            网站信息
+            关于我
           </router-link>
         </li>
       </ul>
@@ -87,6 +87,9 @@
 </template>
 
 <script>
+import $ from 'jquery'
+import {api} from '../../api/api';
+
 export default {
   name: "Header",
   data(){
@@ -94,6 +97,10 @@ export default {
       complete: false,
       complete2: false,
     }
+  },
+  created() {
+    this.resize();
+    api.visit().then();
   },
   mounted() {
     this.resize();
@@ -173,7 +180,6 @@ export default {
     line-height: 115px;
     height: 100%;
     margin: 0 auto;
-    cursor: pointer;
   }
   .main{
     margin: 0;

@@ -13,25 +13,25 @@
           <el-col :span="16" class="timeline">
             <div class="timelines">
               <div>
-                <div v-for="item in blogs" >
-                  <div class="litime_left" v-if="item.direction === 0">
+                <div v-for="(item, index) in blogs" :key="index">
+                  <div class="litime_left" v-if="item.direction === 0" :id="item.title">
                     <div class="time_point_left"></div>
                     <div class="litime_text_left">
                       <div style="margin-bottom: 10px">
                         {{ getDate(item.createdTime) }}
                       </div>
-                      <span style="font-weight: bolder; font-size: 18px">
+                      <span style="font-weight: bolder; font-size: 18px; cursor: pointer" v-on:click="toDetail(item.id)">
                         {{ item.title }}
                       </span>
                     </div>
                   </div>
-                  <div class="litime_right" v-if="item.direction === 1">
+                  <div class="litime_right" v-if="item.direction === 1" :id="item.title">
                     <div class="time_point_right"></div>
                     <div class="litime_text_right">
                       <div style="margin-bottom: 10px">
                         {{ getDate(item.createdTime) }}
                       </div>
-                      <span style="font-weight: bolder; font-size: 18px">
+                      <span style="font-weight: bolder; font-size: 18px; cursor: pointer" v-on:click="toDetail(item.id)">
                         {{ item.title }}
                       </span>
                     </div>
@@ -66,6 +66,7 @@ export default {
   name: "TimeShaft",
   data(){
     return{
+      totalBlog: 0,
       operate:'没有更多啦！',
       title:'',
       upToShow: false,
@@ -80,9 +81,12 @@ export default {
     }
   },
   methods:{
+    toDetail(blogId){
+      this.$router.push({name:'detail',params: {id:blogId}})
+    },
     setTitle(){
       api.getDate().then(res =>{
-        const startTime =  new Date(this.blogs[0].createdTime);
+        const startTime =  new Date('2020/08/01');
         const endTime = new Date(res.entity);
         let y = startTime.getFullYear();
         let m = startTime.getMonth() + 1;
@@ -91,15 +95,15 @@ export default {
         let m1 = endTime.getMonth() + 1;
         let d1 = endTime.getDate();
         const date = (y1-y)*365+(m1-m)*30+d1-d;
-        const cov = Math.round(date/this.blogs.length);
+        const cov = Math.round(date/this.totalBlog);
         let content = '';
         if(cov >= 1){
           content = `每${cov}天一篇`
         }else {
-          content = `每天${Math.round(this.blogs.length/date)}篇`
+          content = `每天${Math.round(this.totalBlog/date)}篇`
         }
-        const time = this.getDate2(this.blogs[0].createdTime);
-        this.title =  `${time}至今,平均${content}博客,总计${this.blogs.length}篇`;
+        const time = this.getDate2('2020/08/01');
+        this.title =  `${time}至今,平均${content}博客,总计${this.totalBlog}篇`;
       })
     },
     getDate(date){
@@ -133,18 +137,22 @@ export default {
       }
       this.param.pageInfo.pageNum += 1;
       api.getTimeShaft(this.param).then(res =>{
-        if(res.code !== 1 || res.entity === undefined || res.entity.length === 0){
+        if(res.code !== 1 || res.entity.list === undefined || res.entity.list.length === 0){
           this.param.pageInfo.pageNum -= 1;
           return;
         }
-        if(res.entity.length !== 10){
+        if(res.entity.list.length !== 10){
           this.operate = '没有更多啦！'
         }
-        res.entity.forEach(item =>{
+        res.entity.list.forEach(item =>{
           this.blogs.push(item);
         })
         this.setTitle();
+        setTimeout(()=>{
+          location.href = `#${res.entity.list[0].title}`;
+        },100)
       });
+
     },
     handleScroll3: function () {
       let scrollTop = window.pageYOffset || document.getElementById("header_top3").scrollTop  || document.body.scrollTop;
@@ -162,7 +170,8 @@ export default {
   },
   created() {
     api.getTimeShaft(this.param).then(res =>{
-      this.blogs = res.entity;
+      this.blogs = res.entity.list;
+      this.totalBlog = res.entity.count;
       if(this.blogs.length === this.param.pageInfo.pageSize){
         this.operate = '更多...';
       }
@@ -268,15 +277,15 @@ export default {
     margin-bottom: 10px;
   }
   .sub_title{
-    line-height: 100px;
-    height: 300px;
+    line-height: 200px;
+    height: 400px;
     color: white;
     font-size: 30px;
     font-family: test_zlz;
   }
   .title{
     margin-top: 50px;
-    line-height: 200px;
+    line-height: 250px;
     height: 200px;
     font-size: 80px;
     letter-spacing: 50px;
@@ -284,9 +293,9 @@ export default {
     font-family: test_zlz;
   }
   .body_top{
-    height: 500px;
+    height: 600px;
     overflow: hidden;
-    background: #050000;
+    background-image: linear-gradient(to right, #7ab8c2 0%, #b6b5ac 100%);
     background-size: 100%;
   }
   .body{

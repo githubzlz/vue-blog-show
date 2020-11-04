@@ -1,7 +1,11 @@
 <template>
   <div>
     <div v-clickoutside="hideReplyBtn" @click="inputFocus" class="my-reply">
-      <el-avatar class="header-img" :size="40" :src="myHeader"></el-avatar>
+      <div class="header-img" style="border-radius: 40px" :style="'width: 40px; height: 40px;background-color: '+myHeader">
+        <div style="line-height: 40px; text-align: center; font-size: 15px; overflow: hidden; height: 40px">
+          {{myName}}
+        </div>
+      </div>
       <div class="reply-info" >
         <div
             tabindex="0"
@@ -20,7 +24,11 @@
       </div>
     </div>
     <div v-for="(item,i) in comments" :key="i" class="author-title reply-father">
-      <el-avatar class="header-img" :size="40" :src="item.headImg"></el-avatar>
+      <div class="header-img" style="border-radius: 40px" :style="'width: 40px; height: 40px;background-color: '+item.fromHeadImg">
+        <div style="line-height: 40px; text-align: center; font-size: 15px; overflow: hidden; height: 40px">
+          {{item.name}}
+        </div>
+      </div>
       <div class="author-info">
         <span class="author-name">{{item.name}}</span>
         <span class="author-time">{{item.time}}</span>
@@ -36,7 +44,11 @@
       </div>
       <div class="reply-box">
         <div v-for="(reply,j) in item.reply" :key="j" class="author-title">
-          <el-avatar class="header-img" :size="40" :src="reply.fromHeadImg"></el-avatar>
+          <div class="header-img" style="border-radius: 40px" :style="'width: 40px; height: 40px;background-color: '+reply.fromHeadImg">
+            <div style="line-height: 40px; text-align: center; font-size: 15px; overflow: hidden; height: 40px">
+              {{reply.name}}
+            </div>
+          </div>
           <div class="author-info">
             <span class="author-name">{{reply.from}}</span>
             <span class="author-time">{{reply.time}}</span>
@@ -57,7 +69,11 @@
         </div>
       </div>
       <div  v-show="_inputShow(i)" class="my-reply my-comment-reply">
-        <el-avatar class="header-img" :size="40" :src="myHeader"></el-avatar>
+        <div class="header-img" style="border-radius: 40px" :style="'width: 40px; height: 40px;background-color: '+myHeader">
+          <div style="line-height: 40px; text-align: center; font-size: 15px; overflow: hidden; height: 40px">
+            {{myName}}
+          </div>
+        </div>
         <div class="reply-info" >
           <div tabindex="0" @focus="showReplyBtn2" contenteditable="true" spellcheck="false" placeholder="输入评论..."   @input="onDivInput($event)"  class="reply-input reply-comment-input"></div>
         </div>
@@ -100,52 +116,56 @@ import {api} from '@/api/api'
 export default {
   name:'Comment',
   props: {
-    commentsData: {}
+    commentsData: {},
+    blogId: String,
+    type: Number,
   },
   watch:{
     commentsData:function(e){
       const map = new Map();
-      e.forEach(item =>{
-        if(item.children){
-          map.set(item.id,item);
-          item.children.forEach(item =>{
+      if(e){
+        e.forEach(item =>{
+          if(item.children){
             map.set(item.id,item);
-          })
-        }
-      });
-      e.forEach(item =>{
-        const comment = {
-          name: item.username,
-          id: item.id,
-          headImg: item.headImg,
-          comment:item.comment,
-          time:this.dateStr(new Date(item.createdTime).getTime()),
-          commentNum:item.children.length,
-          like:item.likes,
-          inputShow:false,
-          reply:[]
-        }
-        if(item.children){
-          item.children.forEach(item =>{
-            const to = map.get(item.toId);
-            const commentC = {
-              id: item.id,
-              from: item.username,
-              fromId: item.id,
-              fromHeadImg: item.headImg,
-              to: to.username,
-              toId: to.id,
-              comment: item.comment,
-              time:this.dateStr(new Date(item.createdTime).getTime()),
-              commentNum:item.commentNum,
-              like:item.likes,
-              inputShow:false
-            }
-            comment.reply.push(commentC);
-          })
-        }
-        this.comments.push(comment);
-      })
+            item.children.forEach(item =>{
+              map.set(item.id,item);
+            })
+          }
+        });
+        e.forEach(item =>{
+          const comment = {
+            name: item.username,
+            id: item.id,
+            fromHeadImg: item.headImg,
+            comment:item.comment,
+            time:this.dateStr(new Date(item.createdTime).getTime()),
+            commentNum:item.children.length,
+            like:item.likes,
+            inputShow:false,
+            reply:[]
+          }
+          if(item.children){
+            item.children.forEach(item =>{
+              const to = map.get(item.toId);
+              const commentC = {
+                id: item.id,
+                from: item.username,
+                fromId: item.id,
+                fromHeadImg: item.headImg,
+                to: to.username,
+                toId: to.id,
+                comment: item.comment,
+                time:this.dateStr(new Date(item.createdTime).getTime()),
+                commentNum:item.commentNum,
+                like:item.likes,
+                inputShow:false
+              }
+              comment.reply.push(commentC);
+            })
+          }
+          this.comments.push(comment);
+        })
+      }
     }
   },
   data(){
@@ -155,12 +175,18 @@ export default {
       index:'0',
       replyComment:'',
       myName:'Lana Del Rey',
-      myHeader:'http://192.168.233.101/group1/M00/00/00/wKjpZV8rZoCAPZtvAA5lGWi2HMU866.jpg',
+      myHeader:'',
       myId:19870621,
       to:'',
       toId:-1,
       comments:[]
     }
+  },
+  created() {
+    const json = JSON.parse(localStorage.getItem('user'));
+    this.myName = json.username;
+    this.myId = json.userId;
+    this.myHeader = json.headImg;
   },
   directives: {clickoutside},
   methods: {
@@ -219,6 +245,7 @@ export default {
             userId:this.myId,
             username:this.myName,
             headImg:this.myHeader,
+            blogId:this.blogId,
             comment:reply,
             type:"1"
         }
@@ -239,11 +266,6 @@ export default {
             this.comments.push(a)
             this.replyComment = ''
             input.innerHTML = '';
-            this.$message({
-              showClose: true,
-              type:'success',
-              message:'评论成功'
-            })
           }else {
             this.$message({
               showClose: true,
@@ -255,8 +277,6 @@ export default {
       }
     },
     sendCommentReply(i){
-      console.log(i)
-      console.log(this.toId, this.to)
       if(!this.replyComment){
         this.$message({
           showClose: true,
@@ -273,12 +293,12 @@ export default {
           userId:this.myId,
           username:this.myName,
           headImg:this.myHeader,
+          blogId:this.blogId,
           comment:reply,
           floorId: this.comments[i].id,
           toId: this.toId,
-          type:"1"
+          type: this.type
         }
-        console.log(param)
         api.getCommentMsg(param).then(res =>{
           if(res.code === 1){
             a.from= this.myName
@@ -290,13 +310,9 @@ export default {
             a.like = 0
             a.id = res.entity.id
             this.comments[i].reply.push(a)
+            this.comments[i].commentNum = this.comments[i].commentNum + 1;
             this.replyComment = ''
             document.getElementsByClassName("reply-comment-input")[i].innerHTML = ""
-            this.$message({
-              showClose: true,
-              type:'success',
-              message:'评论成功'
-            })
           }else {
             this.$message({
               showClose: true,

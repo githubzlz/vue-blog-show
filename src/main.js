@@ -8,6 +8,7 @@ import './assets/css/global.css'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
+
 Vue.component("v-header", Header);
 Vue.component("v-footer", Footer);
 Vue.config.productionTip = false

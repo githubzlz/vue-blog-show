@@ -10,6 +10,11 @@ Vue.use(VueRouter)
       component: () => import('../components/index/Index')
     },
     {
+      path: '/empty',
+      name: 'empty',
+      component: () => import('../components/common/Empty')
+    },
+    {
       path: '/home',
       name: 'index',
       component: () => import('../components/index/Index')
@@ -38,7 +43,13 @@ Vue.use(VueRouter)
       path: '/detail',
       name: 'detail',
       component: () => import('../components/detail/BlogDetail')
-    }
+    },
+    {
+      path: '*',
+      name: '404',
+      component: () => import('../components/index/Index')
+    },
+
   // {
   //   path: '/about',
   //   name: 'About',
@@ -51,6 +62,7 @@ Vue.use(VueRouter)
 
 const router = new VueRouter({
   routes,
+  mode:'history',
   scrollBehavior(to, from, saveTop){
     if (saveTop) {
       return saveTop;
