@@ -10,7 +10,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
-    "element-ui": "^2.4.5",
+    "element-ui": "^2.14.1",
     "jquery": "^3.5.1",
     "stylus": "^0.54.8",
     "stylus-loader": "^3.0.2",

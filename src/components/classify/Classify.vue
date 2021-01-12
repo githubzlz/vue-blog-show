@@ -104,7 +104,7 @@
             </div>
             <div v-for="(item,index) in resultEntity.list" :key="index">
               <transition name="el-fade-in-linear">
-                <div class="card_one" style="background-color: rgb(255,255,255); margin: 20px;"
+              <div class="card_one" style="background-color: rgb(255,255,255); margin: 20px;"
                    v-if="item.blogRecommend.imageUrl !== null" >
                 <div class="card_one_left">
                   <img class="card_one_img" style="width: 100%; height: 100%;" :src="item.blogRecommend.imageUrl">

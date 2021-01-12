@@ -1,10 +1,7 @@
 <template>
   <div class="index" style="margin: 0 auto">
-    <div class="header" id="header_top1" style="position: fixed">
-      <v-header></v-header>
-    </div>
-    <div class="body" style="position: relative; top: 90px; max-width: 1960px; margin: 0 auto">
-      <div class="body_top">
+    <div class="body" style="position: relative; max-width: 1960px; margin: 0 auto">
+      <div class="bodyTop1">
         <div class="background_left">
           <div class="info">
             <div style="height: 130px; width: 2px; background-color: rgba(0,0,0,0.5); position: absolute; right: 15px; bottom: 450px" >
@@ -85,8 +82,7 @@
                 <div class="divider_self"></div>
                 <el-divider content-position="left">今日</el-divider>
                 <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
-                  <div style="display: inline-block; width: 150px;
-                        margin-left: 16px; font-size: 16px;">
+                  <div style="display: inline-block; width: 150px;margin-left: 16px; font-size: 16px;">
                     访问量
                   </div>
                   <div style="display: inline-block; font-family: 等线;">
@@ -94,8 +90,7 @@
                   </div>
                 </div>
                 <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
-                  <div style="display: inline-block; width: 150px;
-                        margin-left: 16px; font-size: 16px;">
+                  <div style="display: inline-block; width: 150px;margin-left: 16px; font-size: 16px;">
                     新文章数量
                   </div>
                   <div style="display: inline-block; font-family: 等线;">
@@ -103,8 +98,7 @@
                   </div>
                 </div>
                 <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
-                  <div style="display: inline-block; width: 150px;
-                        margin-left: 16px; font-size: 16px;">
+                  <div style="display: inline-block; width: 150px; margin-left: 16px; font-size: 16px;">
                     阅读量
                   </div>
                   <div style="display: inline-block; font-family: 等线;">
@@ -252,17 +246,6 @@
           <br>
         </el-col>
       </el-row>
-      <el-backtop :bottom="100">
-        <div>
-          <el-icon class="el-icon-arrow-up"></el-icon>
-        </div>
-      </el-backtop>
-      <div v-if="upToShow" style="width: 40px; font-size: 18px; position: fixed; bottom: 50px; left: 50px; text-align: center; color: #36b1b1; border: 1px solid #58ad66; border-radius: 5px; background-color: #f2faf4; z-index: 999 ">
-        向上显示导航
-      </div>
-    </div>
-    <div class="footer">
-      <v-footer></v-footer>
     </div>
   </div>
 </template>
@@ -477,17 +460,17 @@ export default {
       }
     },
     handleScroll: function () {
-      let scrollTop = window.pageYOffset || document.getElementById("header_top1").scrollTop  || document.body.scrollTop;
-      if(scrollTop >= 180){
-        if(scrollTop > this.scrollIndex){
-          this.upToShow = true;
-          document.getElementById("header_top1").style.position = "";
-        }else {
-          this.upToShow = false;
-          document.getElementById("header_top1").style.position = "fixed";
-        }
-      }
-      this.scrollIndex = scrollTop;
+      // let scrollTop = window.pageYOffset || document.getElementById("header_top1").scrollTop  || document.body.scrollTop;
+      // if(scrollTop >= 180){
+      //   if(scrollTop > this.scrollIndex){
+      //     this.upToShow = true;
+      //     document.getElementById("header_top1").style.position = "";
+      //   }else {
+      //     this.upToShow = false;
+      //     document.getElementById("header_top1").style.position = "fixed";
+      //   }
+      // }
+      // this.scrollIndex = scrollTop;
     },
     change: function (pre){
       //this.img = require(this.carouselData[pre].img);
@@ -552,6 +535,27 @@ export default {
 </script>
 
 <style scoped>
+.bodyTop1{
+  position: relative;
+  margin-top: 75px;
+  height:85%;
+  overflow: hidden;
+}
+
+/*1800px-1200px*/
+@media screen and (max-width: 1800px){
+
+}
+/*1200px-800px*/
+@media screen and (max-width: 1200px){
+  .bodyTop1{
+    display: none;
+  }
+}
+/*800px以下*/
+@media screen and (max-width: 800px){
+
+}
   .icon_my{
     display: inline-block;
     width: 20px;
@@ -563,7 +567,7 @@ export default {
   }
   .tag{
     font-weight: bolder;
-    font-family: "微软雅黑 Light";
+    font-family: "微软雅黑 Light",serif;
     cursor: pointer;
     padding: 2px;
     margin: 4px;
@@ -745,18 +749,6 @@ export default {
     overflow: hidden;
     margin-left: -480px;
     margin-top: 0px;
-  }
-  .index{
-    height: 100%;
-  }
-  .header{
-    z-index: 999;
-    width: 100%;
-    height:90px;
-  }
-  .body_top{
-    position: relative;
-    height:85%;
   }
   .background_left{
     overflow: hidden;

@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { Button } from 'element-ui'
+import {Button, Drawer, Menu, MenuItem, MenuItemGroup, Submenu} from 'element-ui'
 import { Carousel } from 'element-ui'
 import { CarouselItem } from 'element-ui'
 import {Card} from 'element-ui'
@@ -36,3 +36,4 @@ Vue.use(Carousel)
 Vue.use(CarouselItem)
 Vue.use(Card)
 Vue.use(Transfer)
+Vue.use(Drawer)

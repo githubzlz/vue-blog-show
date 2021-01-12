@@ -147,7 +147,7 @@ export default {
         div.animate({marginTop:40},"normal");
         div.animate({marginTop:10},"normal",startAnimation);
       }
-    });
+    });this.$route.query
     $(document).ready(function(){
       const div = $(".back-index");
       startAnimation();

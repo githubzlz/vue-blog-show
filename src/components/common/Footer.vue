@@ -45,7 +45,7 @@
             分享本网站
           </div>
           <div style="width: 180px; margin-top: 20px;text-align: left; color: rgb(70,101,90); text-decoration: underline">
-            <div style="margin-left: 20px; font-size: 16px;cursor: pointer" v-on:click="copyLink">复制分享链接</div>
+            <div style="margin-left: 20px; font-size: 16px;cursor: pointer" v-on:click="">复制分享链接</div>
             <div style="margin-left: 20px; font-size: 16px; margin-top: 10px; cursor: pointer" v-on:click="toQQShare">分享到QQ空间</div>
           </div>
         </li>

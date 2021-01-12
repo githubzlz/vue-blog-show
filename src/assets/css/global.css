@@ -7,16 +7,43 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
     margin: 0;
     padding: 0;
     border: 0;
-    vertical-align: baseline;
+    vertical-align: top;
 }
 html,body,#app{
     margin: 0 auto;
     padding: 0;
     height: 100%;
     width: 100%;
-    min-width: 1900px;
+    min-width: 300px;
     background-color: rgba(244,244,244,0.85);
 }
 img{
     object-fit: cover;
+}
+/*---滚动条整体样式--*/
+::-webkit-scrollbar{
+    width: 6px;
+    height: 20px;
+}
+/*---滑块部分--*/
+::-webkit-scrollbar-thumb{
+    background-color: #88d4f5;
+}
+/*---轨道部分--*/
+::-webkit-scrollbar-track-piece{
+    background-color: #c4edf5;
+}
+/*---滚动条方向按钮--*/
+::-webkit-scrollbar-button {
+    display: none;
+}
+/*---滚动条下方空白--*/
+::-webkit-scrollbar-track {
+}
+/* 可滚动元素的底角*/
+::-webkit-scrollbar-corner {
+    display: none;
+}
+/* 可拖动调整大小手柄 */
+::-webkit-resizer {
 }
