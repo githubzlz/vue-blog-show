@@ -7,12 +7,12 @@
         </router-link>
       </li>
       <li class="li1">
-        <router-link :to="'/search'" class="router-link">
+        <router-link :to="'/classify'" class="router-link">
           博客
         </router-link>
       </li>
       <li class="li1">
-        <router-link :to="{name:'blog', query:{type:1}}" class="router-link">
+        <router-link :to="'/time'" class="router-link">
           时间轴
         </router-link>
       </li>
@@ -30,7 +30,7 @@
         </router-link>
       </li>
       <li class="li1">
-        <router-link :to="'/time'" class="router-link">
+        <router-link :to="'/website'" class="router-link">
           留言板
         </router-link>
       </li>
@@ -64,45 +64,10 @@
         <div style="text-align: left;">
           <h3 style="text-align: center; background-color: rgba(244,244,244,0.85);height: 60px;line-height: 60px">导航</h3>
           <div id="menus">
-            <div class="menu">
+            <div class="menu" v-for="(menu,i) in menus" v-bind:key="i">
               <div class="title">
-                <router-link :to="'/home'">
-                  首页
-                </router-link>
-              </div>
-            </div>
-            <div class="menu">
-              <div class="title">
-                <router-link :to="'/home'">
-                  技术博文
-                </router-link>
-              </div>
-            </div>
-            <div class="menu">
-              <div class="title">
-                <router-link :to="'/home'">
-                  情感博文
-                </router-link>
-              </div>
-            </div>
-            <div class="menu">
-              <div class="title">
-                <router-link :to="'/home'">
-                  时间轴
-                </router-link>
-              </div>
-            </div>
-            <div class="menu">
-              <div class="title">
-                <router-link :to="'/home'">
-                  留言板
-                </router-link>
-              </div>
-            </div>
-            <div class="menu">
-              <div class="title">
-                <router-link :to="'/home'">
-                  关于我
+                <router-link :to="menu.link">
+                  {{menu.title}}
                 </router-link>
               </div>
             </div>
@@ -128,13 +93,13 @@ export default {
           link:'/index'
         },{
           title:'博客',
-          link:'/blog'
+          link:'/classify'
         },{
           title:'时间轴',
-          link:'/search'
+          link:'/time'
         },{
           title:'留言板',
-          link:'/search'
+          link:'/website'
         },{
           title:'关于我',
           link:'/aboutme'
@@ -195,7 +160,7 @@ export default {
   overflow: hidden;
 }
 #header1{
-  background-color: white;
+  background-color: rgba(255,255,255,0.9);
   width: 100%;
   height: 100%;
   display: inline-block;
@@ -203,13 +168,13 @@ export default {
   max-width: 1920px;
 }
 #header2{
-  background-color: white;
+  background-color: rgba(255,255,255,0.9);
   width: 100%;
   height: 100%;
   display: none;
 }
 #header3{
-  background-color: white;
+  background-color: rgba(255,255,255,0.9);
   width: 100%;
   height: 100%;
   display: none;

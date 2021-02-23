@@ -1,255 +1,74 @@
 <template>
   <div class="index" style="margin: 0 auto">
-    <div class="body" style="position: relative; max-width: 1960px; margin: 0 auto">
-      <div class="body_top">
-        <div class="background_left">
-          <div class="info">
-            <div style="height: 130px; width: 2px; background-color: rgba(0,0,0,0.5); position: absolute; right: 15px; bottom: 450px" >
-            </div>
-            <div style="height: 300px">
-              <div style="position: absolute; right: 8px; bottom: 360px">
-                <span style="writing-mode: vertical-lr">Share Me</span>
+    <el-row>
+      <el-col :span="spanData">
+        <el-card v-if="noData" shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
+          暂无数据
+        </el-card>
+        <div v-for="(item,index) in list1" :key="index">
+          <el-card v-if="item.blogRecommend.imageUrl != null" shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
+            <div class="image_div">
+              <div class="background">
               </div>
-              <div style="position: absolute; right: 3px; bottom: 320px; cursor: pointer; background-color: white; border-radius: 30px; width: 23px; height: 23px;" v-on:click="toQQShare">
-                <img class="icon" src="../../assets/image/icon_qq.png" alt="" style="margin-left: -1px; margin-top: -1px">
-              </div>
-              <div style="position: absolute; right: 3px; bottom: 280px; cursor: pointer">
-                <i class="el-icon-share" style="cursor: pointer;height: 24px; font-size: 25px" v-on:click="copyLink"></i>
-              </div>
+              <img :src="item.blogRecommend.imageUrl" class="image" v-on:click="toDetail(item)">
             </div>
-            <div style="height: 150px; width: 2px; background-color: rgba(0,0,0,0.5); position: absolute; right: 15px; bottom: 110px">
+            <div style="padding: 14px; text-align: left">
+              <div class="title" v-on:click="toDetail(item)">{{item.title}}</div>
+              <div class="bottom clearfix">
+                <i class="el-icon-date"></i>
+                <time class="time">{{getDate(item.lastModifiedTime)}}</time>
+                <div style="display: inline-block; margin-right: 15px; margin-top: 10px">
+                  <div class="icon-my" style="margin-left: 25px; width: 18px; height: 18px; display: inline-block"/>
+                  <span style="margin-left: 5px;">{{item.blogPublicInfos.readings}}</span>
+                </div>
+                <div style="display: inline-block; margin-right: 15px;margin-top: 10px">
+                  <i class="el-icon-star-off"></i>
+                  <span style="margin-left: 5px;">{{item.blogPublicInfos.goods}}</span>
+                </div>
+                <div style="display: inline-block;margin-right: 15px;margin-top: 10px">
+                  <i class="el-icon-chat-line-square" style="cursor: pointer" v-on:click="toDetail(item)"></i>
+                  <span style="margin-left: 5px; cursor: pointer" v-on:click="toDetail(item)">{{item.blogPublicInfos.comments}}</span>
+                </div>
+              </div>
+              <div class="card_body">
+                {{item.summary}}
+              </div>
+              <el-button type="text" class="button" v-on:click="toDetail(item)">阅读全文 - ></el-button>
             </div>
-          </div>
+          </el-card>
+          <el-card v-if="item.blogRecommend.imageUrl == null" shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
+            <div style="padding: 14px; text-align: left">
+              <div class="title" v-on:click="toDetail(item)">{{item.title}}</div>
+              <div class="bottom clearfix">
+                <i class="el-icon-date"></i>
+                <time class="time">{{getDate(item.lastModifiedTime)}}</time>
+                <div style="display: inline-block; margin-right: 15px; margin-top: 10px">
+                  <div class="icon-my" style="margin-left: 25px; width: 18px; height: 18px; display: inline-block"/>
+                  <span style="margin-left: 5px;">{{item.blogPublicInfos.readings}}</span>
+                </div>
+                <div style="display: inline-block; margin-right: 15px;margin-top: 10px">
+                  <i class="el-icon-star-off"></i>
+                  <span style="margin-left: 5px;">{{item.blogPublicInfos.goods}}</span>
+                </div>
+                <div style="display: inline-block;margin-right: 15px;margin-top: 10px">
+                  <i class="el-icon-chat-line-square" style="cursor: pointer" v-on:click="toDetail(item)"></i>
+                  <span style="margin-left: 5px; cursor: pointer" v-on:click="toDetail(item)">{{item.blogPublicInfos.comments}}</span>
+                </div>
+              </div>
+              <div class="card_body">
+                {{item.summary}}
+              </div>
+              <el-button type="text" class="button" v-on:click="toDetail(item)">阅读全文 - ></el-button>
+            </div>
+          </el-card>
         </div>
-        <div class="background_right">
-          <div class="cover">
+      </el-col>
+      <el-col :span="spanData">
+        <div v-for="(item,index) in list2" :key="index">
 
-          </div>
         </div>
-        <div class="image">
-          <div class="interval">
-            <el-carousel :interval="5000"
-                         type="card"
-                         height="630px"
-                         trigger="click"
-                         arrow="never"
-                         id="carousel"
-                         indicator-position="none"
-                         ref="carousel"
-                         v-on:change="((pre) => {change(pre)})">
-              <el-carousel-item v-for="(item, index) in carouselData" :key="index">
-                <div :style=" 'width: 100%; height: 100%; background: url('+item.url+') 0 0 / 100% 100% no-repeat;'">
-                </div>
-              </el-carousel-item>
-            </el-carousel>
-          </div>
-          <div id="inner_word" v-if="carouselData[0] !== undefined">
-            <div id="inner_word_top" v-if="carouselData[0].description !== undefined">
-              {{carouselData[0].description}}
-            </div>
-            <div id="inner_word_bottom">
-              {{carouselData[0].subDescription}}
-            </div>
-          </div>
-          <div id="inner_word2">
-            <div id="inner_word_top2" v-if="carouselData[0].description !== undefined">
-              {{carouselData[0].description}}
-            </div>
-            <div id="inner_word_bottom2">
-              {{carouselData[0].subDescription}}
-            </div>
-          </div>
-          <div class="inner_number">
-            <div v-for="index in carouselData.length" :key="index" class="number" v-on:click="setActiveItem(index-1)" :id="'numItem'+index">
-              {{index}}
-            </div>
-          </div>
-        </div>
-      </div>
-      <el-row style="margin-top: 30px; margin-bottom: 20px">
-        <el-col :span="4" > <br> </el-col>
-        <el-col :span="11" id="body_middle_left">
-          <WaterfallChild :plant.sync="searchInputC"></WaterfallChild>
-        </el-col>
-        <el-col :span="5  ">
-          <div style="width: 100%;">
-            <el-card  shadow="hover" style="background-color: rgb(245,255,255); margin: 20px;">
-              <div style="padding: 14px; text-align: left">
-                <div class="title">
-                  <el-icon class="el-icon-s-data" style="margin-right: 10px; "></el-icon>
-                  网站统计
-                </div>
-                <div class="divider_self"></div>
-                <el-divider content-position="left">今日</el-divider>
-                <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
-                  <div style="display: inline-block; width: 150px;margin-left: 16px; font-size: 16px;">
-                    访问量
-                  </div>
-                  <div style="display: inline-block; font-family: 等线;">
-                    {{ statistics.pvToday}}
-                  </div>
-                </div>
-                <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
-                  <div style="display: inline-block; width: 150px;margin-left: 16px; font-size: 16px;">
-                    新文章数量
-                  </div>
-                  <div style="display: inline-block; font-family: 等线;">
-                    {{ statistics.blogToday}}
-                  </div>
-                </div>
-                <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
-                  <div style="display: inline-block; width: 150px; margin-left: 16px; font-size: 16px;">
-                    阅读量
-                  </div>
-                  <div style="display: inline-block; font-family: 等线;">
-                    {{ statistics.readingToday}}
-                  </div>
-                </div>
-                <el-divider content-position="left">总计</el-divider>
-                <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
-                  <div style="display: inline-block; width: 150px;
-                        margin-left: 16px; font-size: 16px;">
-                    访问量
-                  </div>
-                  <div style="display: inline-block; font-family: 等线;">
-                    {{ statistics.pvTotal}}
-                  </div>
-                </div>
-                <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆; ">
-                  <div style="display: inline-block; width: 150px;
-                        margin-left: 16px; font-size: 16px;">
-                    文章数量
-                  </div>
-                  <div style="display: inline-block; font-family: 等线;">
-                    {{ statistics.blogTotal}}
-                  </div>
-                </div>
-                <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
-                  <div style="display: inline-block; width: 150px;
-                        margin-left: 16px; font-size: 16px;">
-                    阅读量
-                  </div>
-                  <div style="display: inline-block; font-family: 等线;">
-                    {{ statistics.readingTotal}}
-                  </div>
-                </div>
-              </div>
-            </el-card>
-            <el-card  shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
-              <div style="padding: 14px; text-align: left">
-                <div class="title">
-                  <el-icon class="el-icon-notebook-1" style="margin-right: 10px; "></el-icon>
-                  热门文章
-                </div>
-                <div class="divider_self"></div>
-                <div class="articleBack" v-for="(item,index) in sideList" :key="index">
-                  <img class="articleBackImg" :src="item.imgSrc" alt="">
-                  <div class="articleBackGround">
-                    <div class="read_button" v-on:click="toDetail(item.id)">阅读</div>
-                  </div>
-                  <div class="articleTop">
-                    Top {{index+1}}
-                  </div>
-                  <div style="position: absolute; right: 10px; top: 5px; color: rgb(205,181,66); height: 25px;">
-                    <div style="margin-right: 3px; height: 25px; display: inline-block; vertical-align: middle">{{item.orderNum}}</div>
-                    <div class="icon_my"></div>
-                  </div>
-                  <div class="articleTitle">
-                    {{item.title}}
-                  </div>
-                  <div class="articleTag">
-                    {{item.type}}
-                  </div>
-                  <div class="articleTime">
-                    {{getDate(item.lastModifiedTime)}}
-                  </div>
-                </div>
-              </div>
-            </el-card>
-            <el-card  shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
-              <div style="padding: 14px; text-align: left">
-                <div class="title">
-                  <el-icon class="el-icon-collection" style="margin-right: 10px"></el-icon>
-                  博文分类
-                </div>
-                <div class="divider_self" style="background-color: #baa667"></div>
-                <div class="sort_title" v-for="(item,index) in typeList" :key="index" v-on:click="clickTypeList(item.type, item.typeName)">
-                  <div class="sort_title_left">{{ item.typeName }}</div>
-                  <div class="sort_title_right">{{ item.number }}</div>
-                </div>
-              </div>
-            </el-card>
-            <el-card  shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
-              <div style="padding: 14px; text-align: left; position: relative">
-                <div class="title">
-                  <el-icon class="el-icon-price-tag" style="margin-right: 10px"></el-icon>
-                  标签云
-                  <i v-on:click="setTagStyle()">
-                    <el-icon class="el-icon-refresh" style="position: absolute; right: 10px; cursor: pointer; z-index: 999">
-                    </el-icon>
-                  </i>
-                </div>
-                <div class="divider_self" style="background-color: coral"></div>
-                <div class="cloud">
-                  <div v-for="(item,index) in tagList" class="tag" :key="index" v-on:click="clickTypeList(item.type, item.name)">
-                    {{ item.name }}
-                  </div>
-                </div>
-              </div>
-            </el-card>
-            <el-card  shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
-              <div style="padding: 14px; text-align: left">
-                <div class="title">
-                  <el-icon class="el-icon-monitor" style="margin-right: 10px"></el-icon>
-                  留言
-                </div>
-                <div class="divider_self" style="background-color: #bdbd77;"></div>
-                <div>
-                  <el-input style="margin-top: 10px; margin-bottom: 20px"
-                            placeholder="请输入称呼"
-                            v-model="searchInputName">
-                    <template slot="prepend">称呼</template>
-                  </el-input>
-                </div>
-                <div>
-                  <el-input style="margin-top: 10px; margin-bottom: 20px"
-                            placeholder="请输入联系方式"
-                            v-model="searchInputContact">
-                    <el-select v-model="select" slot="prepend" style="width: 80px">
-                      <el-option label="QQ" value="QQ"></el-option>
-                      <el-option label="微信" value="微信"></el-option>
-                      <el-option label="邮箱" value="邮箱"></el-option>
-                    </el-select>
-                  </el-input>
-                </div>
-                <div>
-                  <el-input
-                      type="textarea"
-                      placeholder="请输入留言内容"
-                      v-model="textarea"
-                      maxlength="100"
-                      show-word-limit>
-                  </el-input>
-                </div>
-                <div style="margin-top: 10px; text-align: center">
-                  <el-button round v-on:click="clearAll()">清空</el-button>
-                  <el-button round v-on:click="commentClick()">留言</el-button>
-                  <el-button round v-on:click="privateClick()">私信</el-button>
-                </div>
-                <div id="message" style="color: red; font-size: 13px; text-align: center; margin-top: 10px">
-                </div>
-              </div>
-            </el-card>
-          </div>
-        </el-col>
-        <el-col :span="4">
-          <br>
-        </el-col>
-      </el-row>
-      <div v-if="upToShow" style="width: 40px; font-size: 18px; position: fixed; bottom: 50px; left: 50px; text-align: center; color: #36b1b1; border: 1px solid #58ad66; border-radius: 5px; background-color: #f2faf4; z-index: 999 ">
-        向上显示导航
-      </div>
-    </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -259,7 +78,6 @@ import {api} from '@/api/api'
 
 export default {
   name: "Index",
-  components:{WaterfallChild},
   data () {
     return{
       copyContent:'点击获取分享链接',

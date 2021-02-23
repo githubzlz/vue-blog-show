@@ -1,9 +1,10 @@
 <template>
-  <div id="app">
+  <div id="app" >
     <v-header></v-header>
-    <router-view v-if="routerAlive" v-on:click="routerRefresh"/>
-    <v-footer></v-footer>
-    <el-backtop :bottom="100">
+    <transition name="el-zoom-in-top">
+      <router-view v-if="routerAlive" v-on:click="routerRefresh"/>
+    </transition>
+    <el-backtop :bottom="50">
       <div>
         <el-icon class="el-icon-arrow-up"></el-icon>
       </div>
@@ -12,7 +13,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'app',
   data(){

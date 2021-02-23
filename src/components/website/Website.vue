@@ -1,38 +1,37 @@
 <template>
   <div class="website">
-    <div class="header" id="header_top5" style="position: fixed">
-      <v-header></v-header>
-    </div>
-    <div class="body" style="position: relative; top: 90px">
-      <div class="body_top">
-        <div class="title">留言板</div>
-        <div class="sub_title">2020-09/03至今,共{{count.user}}人留言,总计{{count.num}}条!</div>
+    <div id="banner">
+      <div id="bannerBack"></div>
+      <div id="bannerTitle">
+        <TypeWriter v-bind:wordOut="wordOut"></TypeWriter>
       </div>
-      <el-row>
-        <el-col :span="4"><br></el-col>
-        <el-col :span="16">
-          <el-card style="margin: 20px; text-align: left">
-            <comment v-bind:comments-data="comments" v-bind:blogId="'0'" v-bind:type="1"></comment>
-          </el-card>
-        </el-col>
-        <el-col :span="4"><br></el-col>
-      </el-row>
     </div>
-    <div class="footer">
-      <v-footer></v-footer>
+    <div class="body" style="position: relative;">
+      <el-card style="margin: 20px; text-align: left">
+        <comment v-bind:comments-data="comments" v-bind:blogId="'0'" v-bind:type="1"></comment>
+      </el-card>
     </div>
   </div>
 </template>
 
 <script>
+import TypeWriter from "@/components/common/TypeWriter";
 import Comment from "@/components/common/Comment";
 import {api} from '@/api/api'
 
 export default {
   name: "Website",
-  components: {Comment},
+  components: {Comment, TypeWriter},
   data(){
     return{
+      wordOut:{
+        output:'',
+        input:'自2020年1月12日，386天。共132篇博客，平均每三天一篇。',
+        speed:100,
+        disSpeed:30,
+        reAppendIndex:0,
+        cursor:'|'
+      },
       scrollIndex: 0,
       comments:[],
       count:{
@@ -55,32 +54,46 @@ export default {
         }
       })
     },
-    handleScroll5: function () {
-      let scrollTop = window.pageYOffset || document.getElementById("header_top5").scrollTop  || document.body.scrollTop;
-      if(scrollTop >= 180){
-        if(scrollTop > this.scrollIndex){
-          document.getElementById("header_top5").style.position = "";
-        }else {
-          document.getElementById("header_top5").style.position = "fixed";
-        }
-        this.scrollIndex = scrollTop;
-      }
-    },
   },
   created() {
     this.getComments()
     this.getCount()
   },
   mounted() {
-    window.addEventListener('scroll', this.handleScroll5, false);
   },
   destroyed() {
-    window.removeEventListener("scroll",  this.handleScroll5, false);
   }
 }
 </script>
 
 <style scoped>
+#bannerTitle{
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%);
+  font-family: test_zlz,serif;
+  color: white;
+  font-size: 35px;
+  width: 80%;
+}
+#bannerBack{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.1);
+  text-align: center;
+}
+#banner{
+  height: 350px;
+  background-image: url("../../assets/image/bg2.jpg");
+  background-repeat: no-repeat;
+  background-size:cover;
+  background-position: center;
+  position: relative;
+}
   .sub_title{
     line-height: 200px;
     height: 400px;
@@ -104,6 +117,7 @@ export default {
     background-size: 100%;
   }
   .body{
+    max-width: 1300px;
   }
   .header{
     z-index: 999;

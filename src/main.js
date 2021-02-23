@@ -5,9 +5,9 @@ import Footer from './components/common/Footer.vue';
 import router from './router';
 import waterfall from 'vue-waterfall2';
 import './assets/css/global.css';
+import './assets/css/loading.css';
 import '../src/plugins/element';
 import 'element-ui/lib/theme-chalk/index.css';
-
 
 Vue.component("v-header", Header);
 Vue.component("v-footer", Footer);

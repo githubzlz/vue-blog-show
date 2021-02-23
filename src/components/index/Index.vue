@@ -66,20 +66,26 @@
           </div>
         </div>
       </div>
-      <el-row style="margin-top: 30px; margin-bottom: 20px">
-        <el-col :span="4" > <br> </el-col>
-        <el-col :span="11" id="body_middle_left">
-          <WaterfallChild :plant.sync="searchInputC"></WaterfallChild>
-        </el-col>
-        <el-col :span="5  ">
-          <div style="width: 100%;">
-            <el-card  shadow="hover" style="background-color: rgb(245,255,255); margin: 20px;">
-              <div style="padding: 14px; text-align: left">
-                <div class="title">
-                  <el-icon class="el-icon-s-data" style="margin-right: 10px; "></el-icon>
-                  网站统计
-                </div>
-                <div class="divider_self"></div>
+      <div class="bodyTop2">
+        <div id="backContent">
+          <div class="word">
+            <TypeWriter v-bind:wordOut="wordOut"></TypeWriter>
+          </div>
+          <div class="down" v-on:click="downClick()">
+            <img id="downIcon" src="../../assets/icon/down.png" width="100" height="70" alt="">
+          </div>
+        </div>
+      </div>
+      <div id="index">
+        <div id="content0">
+          <el-card class="card" shadow="hover">
+            <div style="padding: 14px; text-align: left">
+              <div class="title">
+                <el-icon class="el-icon-s-data" style="margin-right: 10px; "></el-icon>
+                网站统计
+              </div>
+              <div class="divider_self"></div>
+              <div class="cardItem">
                 <el-divider content-position="left">今日</el-divider>
                 <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
                   <div style="display: inline-block; width: 150px;margin-left: 16px; font-size: 16px;">
@@ -105,6 +111,8 @@
                     {{ statistics.readingToday}}
                   </div>
                 </div>
+              </div>
+              <div class="cardItem">
                 <el-divider content-position="left">总计</el-divider>
                 <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
                   <div style="display: inline-block; width: 150px;
@@ -132,133 +140,194 @@
                   <div style="display: inline-block; font-family: 等线;">
                     {{ statistics.readingTotal}}
                   </div>
+              </div>
+            </div>
+            </div>
+          </el-card>
+        </div>
+        <div id="content1">
+          <WaterfallChild></WaterfallChild>
+        </div>
+        <div id="content2">
+          <el-card id="statistic" class="card" shadow="hover">
+            <div style="padding: 14px; text-align: left">
+              <div class="title">
+                <el-icon class="el-icon-s-data" style="margin-right: 10px; "></el-icon>
+                网站统计
+              </div>
+              <div class="divider_self"></div>
+              <el-divider content-position="left">今日</el-divider>
+              <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
+                <div style="display: inline-block; width: 150px;margin-left: 16px; font-size: 16px;">
+                  访问量
+                </div>
+                <div style="display: inline-block; font-family: 等线;">
+                  {{ statistics.pvToday}}
                 </div>
               </div>
-            </el-card>
-            <el-card  shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
-              <div style="padding: 14px; text-align: left">
-                <div class="title">
-                  <el-icon class="el-icon-notebook-1" style="margin-right: 10px; "></el-icon>
-                  热门文章
+              <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
+                <div style="display: inline-block; width: 150px;margin-left: 16px; font-size: 16px;">
+                  新文章数量
                 </div>
-                <div class="divider_self"></div>
-                <div class="articleBack" v-for="(item,index) in sideList" :key="index">
-                  <img class="articleBackImg" :src="item.imgSrc" alt="">
-                  <div class="articleBackGround">
-                    <div class="read_button" v-on:click="toDetail(item.id)">阅读</div>
-                  </div>
-                  <div class="articleTop">
-                    Top {{index+1}}
-                  </div>
-                  <div style="position: absolute; right: 10px; top: 5px; color: rgb(205,181,66); height: 25px;">
-                    <div style="margin-right: 3px; height: 25px; display: inline-block; vertical-align: middle">{{item.orderNum}}</div>
-                    <div class="icon_my"></div>
-                  </div>
-                  <div class="articleTitle">
-                    {{item.title}}
-                  </div>
-                  <div class="articleTag">
-                    {{item.type}}
-                  </div>
-                  <div class="articleTime">
-                    {{getDate(item.lastModifiedTime)}}
-                  </div>
+                <div style="display: inline-block; font-family: 等线;">
+                  {{ statistics.blogToday}}
                 </div>
               </div>
-            </el-card>
-            <el-card  shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
-              <div style="padding: 14px; text-align: left">
-                <div class="title">
-                  <el-icon class="el-icon-collection" style="margin-right: 10px"></el-icon>
-                  博文分类
+              <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
+                <div style="display: inline-block; width: 150px; margin-left: 16px; font-size: 16px;">
+                  阅读量
                 </div>
-                <div class="divider_self" style="background-color: #baa667"></div>
-                <div class="sort_title" v-for="(item,index) in typeList" :key="index" v-on:click="clickTypeList(item.type, item.typeName)">
-                  <div class="sort_title_left">{{ item.typeName }}</div>
-                  <div class="sort_title_right">{{ item.number }}</div>
+                <div style="display: inline-block; font-family: 等线;">
+                  {{ statistics.readingToday}}
                 </div>
               </div>
-            </el-card>
-            <el-card  shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
-              <div style="padding: 14px; text-align: left; position: relative">
-                <div class="title">
-                  <el-icon class="el-icon-price-tag" style="margin-right: 10px"></el-icon>
-                  标签云
-                  <i v-on:click="setTagStyle()">
-                    <el-icon class="el-icon-refresh" style="position: absolute; right: 10px; cursor: pointer; z-index: 999">
-                    </el-icon>
-                  </i>
+              <el-divider content-position="left">总计</el-divider>
+              <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
+                <div style="display: inline-block; width: 150px;
+                        margin-left: 16px; font-size: 16px;">
+                  访问量
                 </div>
-                <div class="divider_self" style="background-color: coral"></div>
-                <div class="cloud">
-                  <div v-for="(item,index) in tagList" class="tag" :key="index" v-on:click="clickTypeList(item.type, item.name)">
-                    {{ item.name }}
-                  </div>
+                <div style="display: inline-block; font-family: 等线;">
+                  {{ statistics.pvTotal}}
                 </div>
               </div>
-            </el-card>
-            <el-card  shadow="hover" style="background-color: rgb(245,255,255); margin: 20px">
-              <div style="padding: 14px; text-align: left">
-                <div class="title">
-                  <el-icon class="el-icon-monitor" style="margin-right: 10px"></el-icon>
-                  留言
+              <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆; ">
+                <div style="display: inline-block; width: 150px;
+                        margin-left: 16px; font-size: 16px;">
+                  文章数量
                 </div>
-                <div class="divider_self" style="background-color: #bdbd77;"></div>
-                <div>
-                  <el-input style="margin-top: 10px; margin-bottom: 20px"
-                            placeholder="请输入称呼"
-                            v-model="searchInputName">
-                    <template slot="prepend">称呼</template>
-                  </el-input>
-                </div>
-                <div>
-                  <el-input style="margin-top: 10px; margin-bottom: 20px"
-                            placeholder="请输入联系方式"
-                            v-model="searchInputContact">
-                    <el-select v-model="select" slot="prepend" style="width: 80px">
-                      <el-option label="QQ" value="QQ"></el-option>
-                      <el-option label="微信" value="微信"></el-option>
-                      <el-option label="邮箱" value="邮箱"></el-option>
-                    </el-select>
-                  </el-input>
-                </div>
-                <div>
-                  <el-input
-                      type="textarea"
-                      placeholder="请输入留言内容"
-                      v-model="textarea"
-                      maxlength="100"
-                      show-word-limit>
-                  </el-input>
-                </div>
-                <div style="margin-top: 10px; text-align: center">
-                  <el-button round v-on:click="clearAll()">清空</el-button>
-                  <el-button round v-on:click="commentClick()">留言</el-button>
-                  <el-button round v-on:click="privateClick()">私信</el-button>
-                </div>
-                <div id="message" style="color: red; font-size: 13px; text-align: center; margin-top: 10px">
+                <div style="display: inline-block; font-family: 等线;">
+                  {{ statistics.blogTotal}}
                 </div>
               </div>
-            </el-card>
-          </div>
-        </el-col>
-        <el-col :span="4">
-          <br>
-        </el-col>
-      </el-row>
+              <div style="width: 100%; height: 30px; line-height: 30px; font-family: 幼圆;">
+                <div style="display: inline-block; width: 150px;
+                        margin-left: 16px; font-size: 16px;">
+                  阅读量
+                </div>
+                <div style="display: inline-block; font-family: 等线;">
+                  {{ statistics.readingTotal}}
+                </div>
+              </div>
+            </div>
+          </el-card>
+          <el-card class="card" shadow="hover">
+            <div style="padding: 14px; text-align: left">
+              <div class="title">
+                <el-icon class="el-icon-notebook-1" style="margin-right: 10px; "></el-icon>
+                热门板块
+              </div>
+              <div class="divider_self"></div>
+              <div class="articleBack" v-for="(item,index) in sideList" :key="index">
+                <img class="articleBackImg" :src="item.imgSrc" alt="">
+                <div class="articleBackGround">
+                  <div class="read_button" v-on:click="toDetail(item.id)">阅读</div>
+                </div>
+                <div class="articleTop">
+                  Top {{index+1}}
+                </div>
+                <div style="position: absolute; right: 10px; top: 5px; color: rgb(205,181,66); height: 25px;">
+                  <div style="margin-right: 3px; height: 25px; display: inline-block; vertical-align: middle">{{item.orderNum}}</div>
+                  <div class="icon_my"></div>
+                </div>
+                <div class="articleTitle">
+                  {{item.title}}
+                </div>
+                <div class="articleTag">
+                  {{item.type}}
+                </div>
+                <div class="articleTime">
+                  {{getDate(item.lastModifiedTime)}}
+                </div>
+              </div>
+            </div>
+          </el-card>
+          <el-card class="card" shadow="hover">
+            <div style="padding: 14px; text-align: left; position: relative">
+              <div class="title">
+                <el-icon class="el-icon-price-tag" style="margin-right: 10px"></el-icon>
+                标签云
+                <i v-on:click="setTagStyle()">
+                  <el-icon class="el-icon-refresh" style="position: absolute; right: 10px; cursor: pointer; z-index: 999">
+                  </el-icon>
+                </i>
+              </div>
+              <div class="divider_self" style="background-color: coral"></div>
+              <div class="cloud">
+                <div v-for="(item,index) in tagList" class="tag" :key="index" v-on:click="clickTypeList(item.type, item.name)">
+                  {{ item.name }}
+                </div>
+              </div>
+            </div>
+          </el-card>
+          <el-card class="card" shadow="hover">
+            <div style="padding: 14px; text-align: left">
+              <div class="title">
+                <el-icon class="el-icon-monitor" style="margin-right: 10px"></el-icon>
+                留言
+              </div>
+              <div class="divider_self" style="background-color: #bdbd77;"></div>
+              <div>
+                <el-input style="margin-top: 10px; margin-bottom: 20px"
+                          placeholder="请输入称呼"
+                          v-model="searchInputName">
+                  <template slot="prepend">称呼</template>
+                </el-input>
+              </div>
+              <div>
+                <el-input style="margin-top: 10px; margin-bottom: 20px"
+                          placeholder="请输入联系方式"
+                          v-model="searchInputContact">
+                  <el-select v-model="select" slot="prepend" style="width: 80px">
+                    <el-option label="QQ" value="QQ"></el-option>
+                    <el-option label="微信" value="微信"></el-option>
+                    <el-option label="邮箱" value="邮箱"></el-option>
+                  </el-select>
+                </el-input>
+              </div>
+              <div>
+                <el-input
+                    type="textarea"
+                    placeholder="请输入留言内容"
+                    v-model="textarea"
+                    maxlength="100"
+                    show-word-limit>
+                </el-input>
+              </div>
+              <div style="margin-top: 10px; text-align: center">
+                <el-button round v-on:click="clearAll()">清空</el-button>
+                <el-button round v-on:click="commentClick()">留言</el-button>
+                <el-button round v-on:click="privateClick()">私信</el-button>
+              </div>
+              <div id="message" style="color: red; font-size: 13px; text-align: center; margin-top: 10px">
+              </div>
+            </div>
+          </el-card>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import WaterfallChild from './WaterfallChild.vue';
+import TypeWriter from "@/components/common/TypeWriter";
 import {api} from '@/api/api'
-
+import $ from 'jquery'
+import WaterfallChild from "@/components/index/WaterfallChild";
 export default {
   name: "Index",
-  components:{WaterfallChild},
+  components:{WaterfallChild, TypeWriter},
   data () {
     return{
+      wordOut:{
+        output:'',
+        // input:'历史可鉴世，文学可润心，润心博客欢迎您的光临',
+        input:'轻轻的我走了，正如我轻轻地来。我轻轻的招手，作别西天的云彩。最是那一低头的温柔，像一朵水莲花不胜凉风的娇羞。道一声珍重，道一声珍重。那一声珍重里有蜜甜的忧愁。',
+        speed:180,
+        disSpeed:60,
+        reAppendIndex:0,
+        cursor:'|'
+      },
       copyContent:'点击获取分享链接',
       qqShare:'http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=www.zlztsb.com&title=Zlz个人博客&desc=ZLZ博客分享生活趣事,学习笔记,技术干货。&summary=ZLZ博客分享生活趣事,学习笔记,技术干货&site=SOURCE&pics=IMAGE',
       myUser:{},
@@ -321,10 +390,6 @@ export default {
         this.setTagStyle();
       }, 100)
     })
-  },
-  mounted(){
-    window.addEventListener('scroll', this.handleScroll, false);
-
   },
   methods: {
     copyLink(){
@@ -459,19 +524,6 @@ export default {
         }
       }
     },
-    handleScroll: function () {
-      // let scrollTop = window.pageYOffset || document.getElementById("header_top1").scrollTop  || document.body.scrollTop;
-      // if(scrollTop >= 180){
-      //   if(scrollTop > this.scrollIndex){
-      //     this.upToShow = true;
-      //     document.getElementById("header_top1").style.position = "";
-      //   }else {
-      //     this.upToShow = false;
-      //     document.getElementById("header_top1").style.position = "fixed";
-      //   }
-      // }
-      // this.scrollIndex = scrollTop;
-    },
     change: function (pre){
       //this.img = require(this.carouselData[pre].img);
       this.changeWord(pre);
@@ -525,36 +577,179 @@ export default {
           style.left = "0"
         }
       }, 6);
-    }
+    },
+    handleResize(){
+      let h = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+      let bodyTop2 = document.getElementsByClassName('bodyTop2');
+      if(bodyTop2 && bodyTop2.length !== 0){
+        bodyTop2[0].style.height = `${h}px`;
+      }
+    },
+    downClick(){
+      let ht = $('html:first');
+      // 滑动到index处
+      let scrollToContainer = $('#index');
+      let d = scrollToContainer.offset().top;
+      // 滑动到指定位置
+      ht.animate({
+        scrollTop: d
+      }, (d-60)*1.2, ()=>{
+        // 向上滚动一下将导航显示出来
+        ht.scrollTop(d-80)
+      });
+    },
+
+    /**
+     * 向下箭头的动画
+     */
+    downAnimate(){
+      const div = $("#downIcon");
+      startAnimation();
+      function startAnimation(){
+        div.animate({marginTop:10},"normal");
+        div.animate({marginTop:30},"normal");
+        div.animate({marginTop:10},"slow",startAnimation);
+      }
+    },
+  },
+  mounted(){
+    this.downAnimate();
+    this.handleResize();
+    window.addEventListener('resize', () => {
+      this.handleResize();
+    }, false);
   },
   destroyed() {
-    window.removeEventListener("scroll",  this.handleScroll, false);
   }
 }
 
 </script>
 
 <style scoped>
+.index{
+  text-align: center;
+}
 .bodyTop1{
   position: relative;
   margin-top: 75px;
   height:85%;
   overflow: hidden;
 }
-
+.bodyTop2{
+  display: none;
+}
+#index{
+  display: flex;
+  flex-wrap: wrap;
+  margin: 90px auto 20px auto;
+  max-width: 1300px;
+  align-content: flex-start;
+}
+#content0{
+  width: 100%;
+  display: none;
+}
+#content1{
+  display: flex;
+  flex-wrap: wrap;
+  flex: 9;
+  flex-shrink: 0;
+}
+#content2{
+  align-content: flex-start;
+  display: flex;
+  flex-wrap:wrap;
+  flex: 4;
+}
+.card{
+  width: 100%;
+  min-width: 300px;
+  background-color: rgb(245,255,255);
+  margin:20px;
+}
+@media screen and (orientation: portrait) {
+  /*竖屏 css*/
+  .bodyTop2{
+    background-image: url("../../assets/image/bg2.jpg");
+  }
+}
+@media screen and (orientation: landscape) {
+  /*横屏 css*/
+  .bodyTop2{
+    background-image: url("../../assets/image/bg1.jpg");
+  }
+}
 /*1800px-1200px*/
 @media screen and (max-width: 1800px){
-
-}
-/*1200px-800px*/
-@media screen and (max-width: 1200px){
   .bodyTop1{
     display: none;
   }
+  .bodyTop2{
+    display: block;
+    position: relative;
+    background-size: 100% 100%;
+  }
+  #backContent{
+    transition: visibility 1.3s;
+    width: 100%;
+    height: 100%;
+  }
+  .down{
+    cursor: pointer;
+    position: absolute;
+    left: 50%;
+    top: 87%;
+    transform: translate(-50%, 0);
+    height: 70px;
+    width: 100px;
+  }
+  .word{
+    font-family: test_zlz,serif;
+    z-index: 10;
+    font-size: 28px;
+    max-width: 500px;
+    text-align: left;
+    position: relative;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
 }
-/*800px以下*/
-@media screen and (max-width: 800px){
 
+/*1200px-800px*/
+@media screen and (max-width: 1200px){
+  #content1{
+    min-width: 760px;
+  }
+}
+@media screen and (max-width: 1110px){
+  #content0{
+    display: flex;
+  }
+  #statistic{
+    display:none;
+  }
+  .cardItem{
+    display: inline-block;
+    width: 45%;
+    margin: 0 2%;
+    overflow: hidden;
+  }
+}
+/*800px-500px以下*/
+@media screen and (max-width: 800px){
+  #content1{
+    min-width: 500px;
+  }
+  .cardItem{
+    width: 100%;
+  }
+}
+/*500px以下*/
+@media screen and (max-width: 500px){
+  #content1{
+    min-width: 360px;
+  }
 }
   .icon_my{
     display: inline-block;

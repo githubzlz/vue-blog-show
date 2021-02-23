@@ -21,7 +21,7 @@ Vue.use(VueRouter)
     },
     {
       path: '/classify',
-      name: 'classify',
+      name: 'blog',
       component: () => import('../components/classify/Classify')
     },
     {

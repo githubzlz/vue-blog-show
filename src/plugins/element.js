@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import {Button, Drawer, Menu, MenuItem, MenuItemGroup, Submenu} from 'element-ui'
+import {Button, Drawer} from 'element-ui'
 import { Carousel } from 'element-ui'
 import { CarouselItem } from 'element-ui'
 import {Card} from 'element-ui'
@@ -17,7 +17,6 @@ import {Tree} from 'element-ui'
 import {Pagination} from 'element-ui'
 import {Tag} from 'element-ui'
 import {Avatar} from 'element-ui'
-
 Vue.use(Avatar)
 Vue.use(Tag)
 Vue.use(Pagination)

@@ -1,74 +1,81 @@
 <template>
   <div>
-    <div class="header" id="header_top3" style="position: fixed">
-      <v-header></v-header>
-    </div>
-    <div class="body" style="position: relative; top: 90px">
-      <div class="body_top">
-        <div class="title">时间轴</div>
-        <div class="sub_title">{{title}}</div>
+    <div id="banner">
+      <div id="bannerBack"></div>
+      <div id="bannerTitle">
+        <TypeWriter v-bind:wordOut="wordOut"></TypeWriter>
       </div>
-      <el-row style="margin-top: 30px; margin-bottom: 100px; ">
-          <el-col :span="4" > <br> </el-col>
-          <el-col :span="16" class="timeline">
-            <div class="timelines">
-              <div>
-                <div v-for="(item, index) in blogs" :key="index">
-                  <div class="litime_left" v-if="item.direction === 0" :id="item.title">
-                    <div class="time_point_left"></div>
-                    <div class="litime_text_left">
-                      <div style="margin-bottom: 10px">
-                        {{ getDate(item.createdTime) }}
-                      </div>
-                      <span style="font-weight: bolder; font-size: 18px; cursor: pointer" v-on:click="toDetail(item.id)">
-                        {{ item.title }}
-                      </span>
-                    </div>
-                  </div>
-                  <div class="litime_right" v-if="item.direction === 1" :id="item.title">
-                    <div class="time_point_right"></div>
-                    <div class="litime_text_right">
-                      <div style="margin-bottom: 10px">
-                        {{ getDate(item.createdTime) }}
-                      </div>
-                      <span style="font-weight: bolder; font-size: 18px; cursor: pointer" v-on:click="toDetail(item.id)">
-                        {{ item.title }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div style="float: left; width: 100%; margin-top: 20px">
-                  <el-button type="text" v-on:click="getTimeShaft()">{{operate}}</el-button>
-                </div>
+    </div>
+    <div id="body" style="position: relative; margin-top: 20px; padding: 10px">
+      <div id="timelines1" class="timelines">
+        <div v-for="(item, index) in blogs" :key="index">
+          <div class="litime_left" v-if="item.direction === 0" :id="item.title">
+            <div class="time_point_left"></div>
+            <div class="litime_text_left">
+              <div style="margin-bottom: 10px">
+                {{ getDate(item.createdTime) }}
               </div>
+              <span style="font-weight: bolder; font-size: 18px; cursor: pointer" v-on:click="toDetail(item.id)">
+                      {{ item.title }}
+                    </span>
             </div>
-          </el-col>
-          <el-col :span="4" > <br> </el-col>
-        </el-row>
-    </div>
-    <el-backtop :bottom="100">
-      <div>
-        <el-icon class="el-icon-arrow-up"></el-icon>
+          </div>
+          <div class="litime_right" v-if="item.direction === 1" :id="item.title">
+            <div class="time_point_right"></div>
+            <div class="litime_text_right">
+              <div style="margin-bottom: 10px">
+                {{ getDate(item.createdTime) }}
+              </div>
+              <span style="font-weight: bolder; font-size: 18px; cursor: pointer" v-on:click="toDetail(item.id)">
+                      {{ item.title }}
+                    </span>
+            </div>
+          </div>
+        </div>
+        <div style="float: left; width: 100%; margin-top: 20px">
+          <el-button type="text" v-on:click="getTimeShaft()">{{operate}}</el-button>
+        </div>
       </div>
-    </el-backtop>
-    <div v-if="upToShow" style="width: 40px; font-size: 18px; position: fixed; bottom: 50px; left: 50px; text-align: center; color: #36b1b1; border: 1px solid #58ad66; border-radius: 5px; background-color: #f2faf4; z-index: 999 ">
-      向上显示导航
-    </div>
-    <div class="footer">
-      <v-footer></v-footer>
+      <div id="timelines2" class="timelines">
+        <div v-for="(item, index) in blogs" :key="index">
+          <div class="litime_right" :id="item.title" style="width: 95%; margin-right: 10px">
+            <div class="time_point_right"></div>
+            <div class="litime_text_right">
+              <div style="margin-bottom: 10px">
+                {{ getDate(item.createdTime) }}
+              </div>
+              <span style="font-weight: bolder; font-size: 18px; cursor: pointer" v-on:click="toDetail(item.id)">
+                {{ item.title }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div style="float: left; width: 100%; margin-top: 20px">
+          <el-button type="text" v-on:click="getTimeShaft()">{{operate}}</el-button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import TypeWriter from "@/components/common/TypeWriter";
 import {api} from '@/api/api';
 export default {
   name: "TimeShaft",
+  components:{TypeWriter},
   data(){
     return{
+      wordOut:{
+        output:'',
+        input:'自2020年1月12日，386天。共132篇博客，平均每三天一篇。',
+        speed:100,
+        disSpeed:30,
+        reAppendIndex:0,
+        cursor:'|'
+      },
       totalBlog: 0,
       operate:'没有更多啦！',
-      title:'',
       upToShow: false,
       scrollIndex: 0,
       param:{
@@ -103,7 +110,7 @@ export default {
           content = `每天${Math.round(this.totalBlog/date)}篇`
         }
         const time = this.getDate2('2020/08/01');
-        this.title =  `${time}至今,平均${content}博客,总计${this.totalBlog}篇`;
+        this.wordOut.input = `${time}至今,平均${content}博客,总计${this.totalBlog}篇`;
       })
     },
     getDate(date){
@@ -154,19 +161,6 @@ export default {
       });
 
     },
-    handleScroll3: function () {
-      let scrollTop = window.pageYOffset || document.getElementById("header_top3").scrollTop  || document.body.scrollTop;
-      if(scrollTop >= 180){
-        if(scrollTop > this.scrollIndex){
-          this.upToShow = true;
-          document.getElementById("header_top3").style.position = "";
-        }else {
-          this.upToShow = false;
-          document.getElementById("header_top3").style.position = "fixed";
-        }
-        this.scrollIndex = scrollTop;
-      }
-    },
   },
   created() {
     api.getTimeShaft(this.param).then(res =>{
@@ -179,130 +173,132 @@ export default {
     });
   },
   mounted() {
-    window.addEventListener('scroll', this.handleScroll3, false);
   },
   destroyed() {
-    window.removeEventListener("scroll",  this.handleScroll3, false);
   }
 }
 </script>
 
 <style scoped>
-  .timeline{
-    position: relative;
-    background-color: white;
-    padding: 20px;
-    border-radius: 20px;
-    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
-  }
-  .litime_text_right{
-    padding: 20px;
-    text-align: left;
-    margin-left: 20px
-  }
-  .litime_text_left{
-    padding: 20px;
-    text-align: right;
-    margin-right: 20px
-  }
-  .line{
-    height: 100%;
-    width: 5px;
-    background-color: #438943;
-    position: absolute;
-    left: 50%;
-    z-index: 99;
-    transform: translate(-50%,-50%);
-  }
-  .litime_right:hover .time_point_right{
-    box-shadow: 0 0 0 5px rgba(0,0,0,.1);
-  }
-  .time_point_right{
-    box-shadow: 0 0 0 2px rgba(0,0,0,.1);
-    transition: all 400ms;
-    border: 1px solid rgba(0,0,0,.1);
-    z-index: 100;
-    top: 50%;
-    left: 0;
-    transform: translate(calc(-50% + 1px),-50%);
-    background-color: white;
-    height: 20px;
-    width: 20px;
-    position: absolute;
-    border-radius: 20px;
-  }
-  .litime_left:hover .time_point_left{
-    box-shadow: 0 0 0 5px rgba(0,0,0,.1);
-  }
-  .time_point_left{
-    box-shadow: 0 0 0 2px rgba(0,0,0,.1);
-    transition: all 400ms;
-    border: 1px solid rgba(0,0,0,.1);
-    z-index: 100;
-    top: 50%;
-    right: 0;
-    transform: translate(calc(50% - 1px),-50%);
-    background-color: #cec8ca;
-    height: 20px;
-    width: 20px;
-    position: absolute;
-    border-radius: 20px;
-  }
-  .litime_right:hover{
-    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
-  }
-  .litime_right{
-    transition: all 400ms;
-    border-radius: 10px;
-    background-color: white;
-    position: relative;
-    border: 1px solid rgba(0,0,0,0.1);
-    float: right;
-    width: calc(50% + 1px);
-    margin-top: 10px;
-    margin-bottom: 10px;
-  }
-  .litime_left:hover{
-    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
-  }
-  .litime_left{
-    transition: all 400ms;
-    border-radius: 10px;
-    background-color: white;
-    border: 1px solid rgba(0,0,0,0.1);
-    width: calc(50% + 1px);
-    position: relative;
-    float: left;
-    margin-top: 10px;
-    margin-bottom: 10px;
-  }
-  .sub_title{
-    line-height: 200px;
-    height: 400px;
-    color: white;
+#timelines1{
+  display: block;
+}
+#timelines2{
+  display: none;
+}
+#body{
+  margin: 0 auto;
+  max-width: 1100px;
+  min-width: 360px;
+}
+#bannerTitle{
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%);
+  font-family: test_zlz,serif;
+  color: white;
+  font-size: 35px;
+  width: 80%;
+}
+#bannerBack{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.1);
+  text-align: center;
+}
+#banner{
+  height: 350px;
+  background-image: url("../../assets/image/bg1.jpg");
+  background-repeat: no-repeat;
+  background-size:cover;
+  background-position: center;
+  position: relative;
+}
+.litime_text_right{
+  padding: 20px;
+  text-align: left;
+  margin-left: 20px;
+}
+.litime_text_left{
+  padding: 20px;
+  text-align: right;
+  margin-right: 20px
+}
+.litime_right:hover .time_point_right{
+  box-shadow: 0 0 0 5px rgba(0,0,0,.1);
+}
+.time_point_right{
+  box-shadow: 0 0 0 2px rgba(0,0,0,.1);
+  transition: all 400ms;
+  border: 1px solid rgba(0,0,0,.1);
+  z-index: 100;
+  top: 50%;
+  left: 0;
+  transform: translate(calc(-50% + 1px),-50%);
+  background-color: white;
+  height: 20px;
+  width: 20px;
+  position: absolute;
+  border-radius: 20px;
+}
+.litime_left:hover .time_point_left{
+  box-shadow: 0 0 0 5px rgba(0,0,0,.1);
+}
+.time_point_left{
+  box-shadow: 0 0 0 2px rgba(0,0,0,.1);
+  transition: all 400ms;
+  border: 1px solid rgba(0,0,0,.1);
+  z-index: 100;
+  top: 50%;
+  right: 0;
+  transform: translate(calc(50% - 1px),-50%);
+  background-color: #cec8ca;
+  height: 20px;
+  width: 20px;
+  position: absolute;
+  border-radius: 20px;
+}
+.litime_right:hover{
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+}
+.litime_right{
+  transition: all 400ms;
+  border-radius: 10px;
+  background-color: white;
+  position: relative;
+  border: 1px solid rgba(0,0,0,0.1);
+  float: right;
+  width: calc(50% + 1px);
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.litime_left:hover{
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+}
+.litime_left{
+  transition: all 400ms;
+  border-radius: 10px;
+  background-color: white;
+  border: 1px solid rgba(0,0,0,0.1);
+  width: calc(50% + 1px);
+  position: relative;
+  float: left;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+@media screen and (max-width: 500px){
+  #bannerTitle{
     font-size: 30px;
-    font-family: test_zlz;
   }
-  .title{
-    margin-top: 50px;
-    line-height: 250px;
-    height: 200px;
-    font-size: 80px;
-    letter-spacing: 50px;
-    color: white;
-    font-family: test_zlz;
+  #timelines1{
+    display: none;
   }
-  .body_top{
-    height: 600px;
-    overflow: hidden;
-    background-image: linear-gradient(to right, #7ab8c2 0%, #b6b5ac 100%);
-    background-size: 100%;
+  #timelines2{
+    display: block;
   }
-  .body{
-  }
-  .header{
-    z-index: 999;
-    width: 100%;
-    height:90px;
-  }
+}
 </style>

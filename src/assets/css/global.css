@@ -16,6 +16,7 @@ html,body,#app{
     width: 100%;
     min-width: 300px;
     background-color: rgba(244,244,244,0.85);
+    max-width: 1960px;
 }
 img{
     object-fit: cover;
@@ -31,7 +32,7 @@ img{
 }
 /*---轨道部分--*/
 ::-webkit-scrollbar-track-piece{
-    background-color: #c4edf5;
+    background-color: rgba(0,0,0,0);
 }
 /*---滚动条方向按钮--*/
 ::-webkit-scrollbar-button {
@@ -46,4 +47,31 @@ img{
 }
 /* 可拖动调整大小手柄 */
 ::-webkit-resizer {
+}
+.flex{
+    display: flex;
+    flex-wrap: wrap;
+}
+.big{
+    flex: 8;
+}
+.small{
+    flex: 3;
+}
+.card{
+    background-color: white;
+    border-radius: 10px;
+    box-shadow:2px 2px 5px rgba(0,0,0,0.2);
+    overflow: hidden;
+    padding: 10px;
+}
+.cardTwo{
+    padding: 20px;
+    margin-bottom: 20px;
+    text-align: left;
+}
+.under_line{
+    height: 5px;
+    margin: 10px 0;
+    background-color: #3aa047;
 }
